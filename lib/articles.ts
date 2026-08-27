@@ -1,4 +1,5 @@
 import { createAnonClient } from "@/lib/supabase-anon";
+import { publicSupabaseUrl } from "@/lib/env";
 import { isThemeSlug, type ThemeSlug } from "@/lib/site";
 import { readingMinutes } from "@/lib/read-time";
 
@@ -35,7 +36,7 @@ function coverUrl(path: string | null): string | null {
   if (path.startsWith("http://") || path.startsWith("https://")) {
     return path;
   }
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const base = publicSupabaseUrl();
   if (!base) {
     return null;
   }
