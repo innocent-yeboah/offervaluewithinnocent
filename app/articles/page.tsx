@@ -22,8 +22,10 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
   const articles = await searchLiveArticles(q, theme);
 
   return (
-    <main id="main" className="mx-auto max-w-3xl px-5 py-16">
-      <h1 className="font-serif text-4xl font-semibold tracking-tight">Articles</h1>
+    <main id="main" className="site-pad mx-auto max-w-3xl py-10 sm:py-16">
+      <h1 className="font-serif text-[1.85rem] font-semibold tracking-tight text-balance sm:text-4xl">
+        Articles
+      </h1>
       <p className="mt-3 text-muted">{copy.weeklyPromise}</p>
 
       <form className="mt-8 flex flex-col gap-3 sm:flex-row" method="get" action="/articles">
@@ -35,28 +37,28 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
           name="q"
           defaultValue={q}
           placeholder="Search titles and writing"
-          className="flex-1 rounded-md border border-line bg-paper px-3 py-2 text-ink"
+          className="min-h-11 flex-1 rounded-md border border-line bg-paper px-3 py-2 text-base text-ink"
         />
         {theme ? <input type="hidden" name="theme" value={theme} /> : null}
-        <button type="submit" className="rounded-md border border-line px-4 py-2 text-sm">
+        <button type="submit" className="inline-flex min-h-11 items-center justify-center rounded-md border border-line px-4 text-sm">
           Search
         </button>
       </form>
 
-      <ul className="mt-6 flex flex-wrap gap-2" aria-label="Themes">
-        <li>
+      <ul className="mt-6 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:flex-wrap [&::-webkit-scrollbar]:hidden" aria-label="Themes">
+        <li className="shrink-0">
           <Link
             href="/articles"
-            className={`rounded-full border px-3 py-1 text-xs ${!theme ? "border-ink text-ink" : "border-line text-muted"}`}
+            className={`inline-flex min-h-9 items-center rounded-full border px-3 py-1 text-xs ${!theme ? "border-ink text-ink" : "border-line text-muted"}`}
           >
             All
           </Link>
         </li>
         {themes.map((item) => (
-          <li key={item.slug}>
+          <li key={item.slug} className="shrink-0">
             <Link
               href={`/articles?theme=${item.slug}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
-              className={`rounded-full border px-3 py-1 text-xs ${theme === item.slug ? "border-ink text-ink" : "border-line text-muted"}`}
+              className={`inline-flex min-h-9 items-center rounded-full border px-3 py-1 text-xs ${theme === item.slug ? "border-ink text-ink" : "border-line text-muted"}`}
             >
               {item.label}
             </Link>

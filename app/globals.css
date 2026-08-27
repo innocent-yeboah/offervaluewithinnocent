@@ -37,12 +37,40 @@ html.dark {
 html {
   background-color: var(--paper);
   color: var(--ink);
+  overflow-x: clip;
 }
 
 body {
   background-color: var(--paper);
   color: var(--ink);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  overflow-x: clip;
+}
+
+img,
+video,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+textarea,
+select {
+  font-size: 1rem;
+  max-width: 100%;
+}
+
+.site-pad {
+  padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+}
+
+@media (min-width: 640px) {
+  .site-pad {
+    padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  }
 }
 
 .font-serif {
@@ -62,6 +90,11 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+.prose-letter {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .prose-letter h1,
@@ -99,6 +132,13 @@ body {
 .prose-letter img {
   border-radius: 0.25rem;
   margin: 1.4em 0;
+}
+
+.prose-letter pre,
+.prose-letter table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .skip-link {

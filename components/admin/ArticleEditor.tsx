@@ -261,12 +261,12 @@ export default function ArticleEditor({
             value={body}
             onChange={(event) => setBody(event.target.value)}
             rows={22}
-            className="rounded-md border border-line bg-paper px-3 py-2 font-mono text-sm"
+            className="min-h-40 rounded-md border border-line bg-paper px-3 py-2 font-mono text-sm sm:min-h-80"
           />
         </label>
         <div>
           <p className="text-sm text-muted">Preview</p>
-          <div className="mt-1 min-h-40 rounded-md border border-line px-4 py-3">
+          <div className="mt-1 min-h-40 overflow-x-auto rounded-md border border-line px-4 py-3">
             <MarkdownBody markdown={preview || "_Nothing to preview yet._"} />
           </div>
         </div>
@@ -284,7 +284,7 @@ export default function ArticleEditor({
           type="datetime-local"
           value={scheduleAt}
           onChange={(event) => setScheduleAt(event.target.value)}
-          className="max-w-xs rounded-md border border-line bg-paper px-3 py-2"
+          className="w-full max-w-full rounded-md border border-line bg-paper px-3 py-2 sm:max-w-xs"
         />
       </label>
       <div className="flex flex-wrap gap-3">
@@ -292,7 +292,7 @@ export default function ArticleEditor({
           type="button"
           disabled={pending}
           onClick={() => void save("draft")}
-          className="rounded-md border border-line px-4 py-2 text-sm"
+          className="inline-flex min-h-11 items-center rounded-md border border-line px-4 text-sm"
         >
           Save draft
         </button>
@@ -300,7 +300,7 @@ export default function ArticleEditor({
           type="button"
           disabled={pending}
           onClick={() => void save("now")}
-          className="rounded-md bg-link px-4 py-2 text-sm font-medium text-paper"
+          className="inline-flex min-h-11 items-center rounded-md bg-link px-4 text-sm font-medium text-paper"
         >
           Publish now
         </button>
@@ -308,7 +308,7 @@ export default function ArticleEditor({
           type="button"
           disabled={pending}
           onClick={() => void save("schedule")}
-          className="rounded-md border border-gold px-4 py-2 text-sm"
+          className="inline-flex min-h-11 items-center rounded-md border border-gold px-4 text-sm"
         >
           Schedule
         </button>

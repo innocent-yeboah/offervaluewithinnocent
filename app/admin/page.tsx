@@ -47,15 +47,15 @@ export default async function AdminHomePage() {
   const notes = (messages ?? []) as ContactRow[];
 
   return (
-    <main id="main" className="mx-auto max-w-3xl px-5 py-16">
-      <div className="flex items-center justify-between gap-4">
+    <main id="main" className="site-pad mx-auto max-w-3xl py-10 sm:py-16">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-serif text-3xl font-semibold">Writing</h1>
-        <div className="flex gap-3">
-          <Link href="/admin/articles/new" className="rounded-md bg-link px-3 py-2 text-sm text-paper">
+        <div className="flex flex-wrap items-center gap-3">
+          <Link href="/admin/articles/new" className="inline-flex min-h-11 items-center rounded-md bg-link px-3 text-sm text-paper">
             New piece
           </Link>
           <form action={signOutAction}>
-            <button type="submit" className="text-sm text-muted hover:text-ink">
+            <button type="submit" className="inline-flex min-h-11 items-center text-sm text-muted hover:text-ink">
               Sign out
             </button>
           </form>

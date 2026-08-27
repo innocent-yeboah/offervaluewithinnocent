@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function AdminLoginPage() {
   return (
-    <main id="main" className="mx-auto max-w-3xl px-5 py-16">
+    <main id="main" className="site-pad mx-auto max-w-3xl py-10 sm:py-16">
       <h1 className="font-serif text-3xl font-semibold">Sign in to write</h1>
       <p className="mt-2 text-sm text-muted">Email and password. This door is only for you.</p>
       <Suspense>

@@ -38,6 +38,9 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#FAF6F0",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 const themeScript = `
@@ -58,7 +61,7 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="min-h-screen bg-paper text-ink antialiased">
+      <body className="min-h-dvh bg-paper text-ink antialiased">
         <a className="skip-link" href="#main">
           Skip to writing
         </a>

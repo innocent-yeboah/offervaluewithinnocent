@@ -17,7 +17,7 @@ export default function ContactForm() {
           name="name"
           required
           autoComplete="name"
-          className="rounded-md border border-line bg-paper px-3 py-2 text-base text-ink"
+          className="min-h-11 rounded-md border border-line bg-paper px-3 py-2 text-base text-ink"
         />
       </label>
       <label className="flex flex-col gap-1 text-sm">
@@ -27,7 +27,7 @@ export default function ContactForm() {
           type="email"
           required
           autoComplete="email"
-          className="rounded-md border border-line bg-paper px-3 py-2 text-base text-ink"
+          className="min-h-11 rounded-md border border-line bg-paper px-3 py-2 text-base text-ink"
         />
       </label>
       <label className="flex flex-col gap-1 text-sm">
@@ -43,7 +43,7 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={pending}
-        className="self-start rounded-md bg-link px-4 py-2 text-sm font-medium text-paper disabled:opacity-60"
+        className="inline-flex min-h-11 self-stretch items-center justify-center rounded-md bg-link px-4 text-sm font-medium text-paper disabled:opacity-60 sm:self-start"
       >
         {pending ? "Sending…" : "Send"}
       </button>
@@ -52,7 +52,9 @@ export default function ContactForm() {
           {state.message}
         </p>
       ) : (
-        <p className="text-sm text-muted">You can also write {site.email} anytime.</p>
+        <p className="text-sm text-muted">
+          You can also write <span className="break-all">{site.email}</span> anytime.
+        </p>
       )}
     </form>
   );

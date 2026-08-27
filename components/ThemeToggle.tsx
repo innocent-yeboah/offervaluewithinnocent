@@ -26,7 +26,7 @@ export default function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      className="rounded-full border border-line px-3 py-1 text-xs text-muted hover:text-ink"
+      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-line px-3 text-xs text-muted hover:text-ink"
       aria-pressed={dark}
       aria-label={dark ? "Switch to light reading" : "Switch to dark reading"}
     >

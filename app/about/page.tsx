@@ -8,9 +8,9 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main id="main" className="mx-auto max-w-3xl px-5 py-16">
-      <h1 className="font-serif text-4xl font-semibold tracking-tight">About</h1>
-      <div className="mt-8 space-y-5 text-lg leading-relaxed text-ink">
+    <main id="main" className="site-pad mx-auto max-w-3xl py-10 sm:py-16">
+      <h1 className="font-serif text-[1.85rem] font-semibold tracking-tight sm:text-4xl">About</h1>
+      <div className="mt-8 space-y-5 text-base leading-relaxed text-pretty text-ink sm:text-lg">
         <p>I’m {site.author}. I write as a fellow traveler, not as someone who has arrived.</p>
         <p>
           I am learning, in public, how to offer value from the inside out — without hustling to
@@ -24,7 +24,7 @@ export default function AboutPage() {
         </ul>
         <p>
           If you are walking a similar path, you are welcome here. Join the weekly list, or write
-          me at {site.email}.
+          me at <span className="break-all">{site.email}</span>.
         </p>
         <p className="text-muted">{copy.bookQuiet}</p>
       </div>

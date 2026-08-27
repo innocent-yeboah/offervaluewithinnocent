@@ -12,12 +12,12 @@ export default async function HomePage() {
   const kitOpen = isKitConfigured();
 
   return (
-    <main id="main" className="mx-auto max-w-3xl px-5 py-16">
+    <main id="main" className="site-pad mx-auto max-w-3xl py-10 sm:py-16">
       <p className="text-sm uppercase tracking-[0.14em] text-gold">{copy.weeklyPromise}</p>
-      <h1 className="font-serif mt-4 text-4xl font-semibold leading-tight tracking-tight text-ink sm:text-5xl">
+      <h1 className="font-serif mt-4 text-[1.85rem] font-semibold leading-tight tracking-tight text-balance text-ink sm:text-4xl lg:text-5xl">
         {site.headline}
       </h1>
-      <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
+      <p className="mt-6 max-w-2xl text-base leading-relaxed text-pretty text-muted sm:text-lg">
         I’m {site.author}. I write as a fellow traveler — still learning how to live with value,
         honesty, and service. If that is your path too, you are welcome here.
       </p>
@@ -34,7 +34,7 @@ export default async function HomePage() {
             <li key={theme.slug}>
               <Link
                 href={`/articles?theme=${theme.slug}`}
-                className="block rounded-md border border-line px-3 py-3 text-sm text-ink hover:border-gold"
+                className="flex min-h-12 items-center rounded-md border border-line px-3 py-3 text-sm text-ink hover:border-gold"
               >
                 {theme.label}
               </Link>

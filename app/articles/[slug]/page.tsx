@@ -38,8 +38,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const mailto = `mailto:${site.email}?subject=${encodeURIComponent(article.title)}`;
 
   return (
-    <main id="main" className="mx-auto max-w-3xl px-5 py-16">
-      <p className="text-xs uppercase tracking-wide text-muted">
+    <main id="main" className="site-pad mx-auto max-w-3xl py-10 sm:py-16">
+      <p className="text-xs uppercase leading-relaxed tracking-wide text-muted">
         {themeLabel(article.theme)}
         <span className="mx-2" aria-hidden="true">
           ·
@@ -50,7 +50,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </span>
         {article.reading_minutes} min read
       </p>
-      <h1 className="font-serif mt-3 text-4xl font-semibold leading-tight tracking-tight">
+      <h1 className="font-serif mt-3 text-[1.85rem] font-semibold leading-tight tracking-tight text-balance break-words sm:text-4xl">
         {article.title}
       </h1>
       {article.cover_image_path ? (
@@ -58,7 +58,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <img
           src={article.cover_image_path}
           alt=""
-          className="mt-8 w-full rounded-md"
+          className="mt-8 h-auto w-full rounded-md"
         />
       ) : null}
       <div className="mt-10">
@@ -67,7 +67,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
       <p className="mt-12 border-t border-line pt-8 text-muted">
         {copy.writeMe}{" "}
-        <a className="text-link underline-offset-4 hover:underline" href={mailto}>
+        <a className="break-all text-link underline-offset-4 hover:underline" href={mailto}>
           {site.email}
         </a>
       </p>

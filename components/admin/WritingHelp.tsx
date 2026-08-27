@@ -126,7 +126,7 @@ export default function WritingHelp({
               type="button"
               disabled={busy}
               onClick={applySuggestion}
-              className="rounded-md bg-link px-3 py-1.5 text-sm font-medium text-paper"
+              className="inline-flex min-h-11 items-center rounded-md bg-link px-3 text-sm font-medium text-paper"
             >
               Use this in the draft
             </button>
