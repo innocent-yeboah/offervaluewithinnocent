@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-newsreader);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-link: var(--link);
+  --color-gold: var(--gold);
+  --color-coral: var(--coral);
+  --color-line: var(--line);
+}
+
+:root {
+  --paper: #faf6f0;
+  --ink: #1c1917;
+  --muted: #57534e;
+  --link: #1e3a8a;
+  --gold: #c9a227;
+  --coral: #e07a5f;
+  --line: #e7e0d6;
+}
+
+html.dark {
+  --paper: #1a1714;
+  --ink: #f4ede3;
+  --muted: #c4b8a8;
+  --link: #a8bdf0;
+  --gold: #d4af37;
+  --coral: #e8a090;
+  --line: #3a342c;
+}
+
+html {
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-serif {
+  font-family: var(--font-serif), ui-serif, Georgia, serif;
+}
+
+:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.prose-letter h1,
+.prose-letter h2,
+.prose-letter h3 {
+  font-family: var(--font-serif), ui-serif, Georgia, serif;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  margin-top: 1.6em;
+  margin-bottom: 0.5em;
+}
+
+.prose-letter p {
+  margin-bottom: 1.15em;
+}
+
+.prose-letter a {
+  color: var(--link);
+  text-underline-offset: 3px;
+}
+
+.prose-letter ul,
+.prose-letter ol {
+  margin: 0 0 1.15em 1.2em;
+}
+
+.prose-letter blockquote {
+  border-left: 3px solid var(--gold);
+  padding-left: 1rem;
+  margin: 1.4em 0;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.prose-letter img {
+  border-radius: 0.25rem;
+  margin: 1.4em 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 50;
+  border-radius: 0.25rem;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.5rem 0.75rem;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}

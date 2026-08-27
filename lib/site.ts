@@ -1,0 +1,69 @@
+/**
+ * Single source of truth for Offer Value With Innocent.
+ * A personal writing home: serve first, write weekly, grow trust.
+ */
+export const site = {
+  name: "Offer Value With Innocent",
+  author: "Innocent Golden",
+  headline:
+    "You don’t have to hustle to prove your worth. Let’s learn how to offer value from the inside out.",
+  tagline: "Weekly writing on value, habits, relationships, and service.",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://offervaluewithinnocent.com",
+  email: "hello@offervaluewithinnocent.com",
+  locale: "en",
+} as const;
+
+export const themes = [
+  { slug: "value", label: "Value" },
+  { slug: "habits", label: "Habits" },
+  { slug: "relationship", label: "Relationship" },
+  { slug: "awareness", label: "Awareness" },
+  { slug: "money", label: "Money" },
+  { slug: "purpose", label: "Purpose" },
+  { slug: "focus", label: "Focus" },
+  { slug: "service", label: "Service" },
+] as const;
+
+export type ThemeSlug = (typeof themes)[number]["slug"];
+
+export const themeSlugs = themes.map((theme) => theme.slug);
+
+export function isThemeSlug(value: string): value is ThemeSlug {
+  return (themeSlugs as readonly string[]).includes(value);
+}
+
+export function themeLabel(slug: string): string {
+  return themes.find((theme) => theme.slug === slug)?.label ?? slug;
+}
+
+export const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/articles", label: "Articles" },
+  { href: "/about", label: "About" },
+  { href: "/newsletter", label: "Newsletter" },
+  { href: "/contact", label: "Contact" },
+] as const;
+
+export const copy = {
+  weeklyPromise: "New writing each week.",
+  newsletterWhat:
+    "Each week I’ll send a short note with a link to the new piece. The reading happens here.",
+  emptyArticles:
+    "There are no pieces here yet. I have promised new writing each week. The first one will live on this page.",
+  subscribeClosed: "Subscriptions aren’t open just yet.",
+  subscribeConfirm:
+    "Check your email to confirm. You are not on the list until you click that link.",
+  subscribeActive:
+    "You’re on the list. Each week I’ll send a short note with a link to the new piece.",
+  tryAgain: "Let’s try that again together?",
+  writeMe: "If this met you, write me.",
+  kitAfterLive: "Send this week’s note in Kit when you are ready.",
+  scheduledHint:
+    "Readers will see this only after that time. Check in a private window.",
+  bookQuiet:
+    "A book may grow from this writing. It is only an idea today — no date, no waitlist.",
+  writingHelpClosed:
+    "Writing help isn’t open yet. A free Gemini key will open it until you’re ready for Claude.",
+  writingHelpHint:
+    "Ask for a first draft, or for help shaping what you wrote. You still save and publish. Nothing is sent to readers.",
+} as const;
