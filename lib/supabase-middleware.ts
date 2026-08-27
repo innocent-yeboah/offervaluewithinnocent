@@ -1,13 +1,14 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { publicSupabaseAnonKey, publicSupabaseUrl } from "@/lib/env";
 
 /**
  * Refreshes the auth cookie on /admin routes only.
  * Public pages do not run this, so they never inherit the author session.
  */
 export async function updateAdminSession(request: NextRequest) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = publicSupabaseUrl();
+  const anonKey = publicSupabaseAnonKey();
 
   let response = NextResponse.next({ request });
 

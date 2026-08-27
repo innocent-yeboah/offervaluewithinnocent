@@ -1,13 +1,14 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { publicSupabaseAnonKey, publicSupabaseUrl } from "@/lib/env";
 
 /**
  * Cookie session client for /admin only.
  * Do not use this to load public article lists (Rule 3).
  */
 export async function createSupabaseServer() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = publicSupabaseUrl();
+  const anonKey = publicSupabaseAnonKey();
 
   if (!url || !anonKey) {
     return null;

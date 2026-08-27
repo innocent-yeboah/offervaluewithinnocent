@@ -4,7 +4,7 @@ import { getLiveArticles } from "@/lib/articles";
 import { isKitConfigured } from "@/lib/kit";
 import { copy, site, themes } from "@/lib/site";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const articles = await getLiveArticles();

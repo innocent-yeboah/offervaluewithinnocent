@@ -4,7 +4,7 @@ import ArticleCard from "@/components/ArticleCard";
 import { searchLiveArticles } from "@/lib/articles";
 import { copy, isThemeSlug, themes } from "@/lib/site";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Articles",
