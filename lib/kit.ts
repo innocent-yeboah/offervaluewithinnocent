@@ -11,28 +11,31 @@ export type SubscribeState =
 type KitForm = {
   id?: number;
   uid?: string;
+  name?: string;
+  title?: string;
   embed_js?: string;
   embed_url?: string;
 };
 
-type KitSubscriber = {
-  id?: number;
-  state?: string;
-  email_address?: string;
-};
-
 type KitJson = {
   forms?: KitForm[];
-  subscriber?: KitSubscriber;
+  subscriber?: { state?: string };
   subscription?: { state?: string };
   errors?: string[];
   error?: string;
   message?: string;
 };
 
-function kitKey(): string {
+function kitPublicKey(): string {
   return (
     process.env.KIT_API_KEY?.trim() ||
+    process.env.CONVERTKIT_API_KEY?.trim() ||
+    ""
+  );
+}
+
+function kitSecret(): string {
+  return (
     process.env.KIT_API_SECRET?.trim() ||
     process.env.CONVERTKIT_API_SECRET?.trim() ||
     ""
@@ -44,7 +47,7 @@ function kitFormRef(): string {
 }
 
 function kitConfigured(): boolean {
-  return Boolean(kitKey() && kitFormRef());
+  return Boolean((kitPublicKey() || kitSecret()) && kitFormRef());
 }
 
 function formMatches(form: KitForm, formRef: string): boolean {
@@ -77,7 +80,64 @@ async function parseJson(response: Response): Promise<KitJson> {
 
 let resolvedFormId: string | null = null;
 
-async function resolveNumericFormId(apiKey: string, formRef: string): Promise<string> {
+async function listForms(): Promise<KitForm[]> {
+  const publicKey = kitPublicKey();
+  const secret = kitSecret();
+
+  if (secret) {
+    const v4 = await fetch("https://api.kit.com/v4/forms?per_page=500", {
+      headers: { "X-Kit-Api-Key": secret },
+    });
+    if (v4.ok) {
+      return (await parseJson(v4)).forms ?? [];
+    }
+  }
+
+  if (publicKey) {
+    const v3 = await fetch(
+      `https://api.convertkit.com/v3/forms?api_key=${encodeURIComponent(publicKey)}`,
+    );
+    if (v3.ok) {
+      return (await parseJson(v3)).forms ?? [];
+    }
+  }
+
+  if (secret) {
+    const v3Secret = await fetch(
+      `https://api.convertkit.com/v3/forms?api_secret=${encodeURIComponent(secret)}`,
+    );
+    if (v3Secret.ok) {
+      return (await parseJson(v3Secret)).forms ?? [];
+    }
+  }
+
+  return [];
+}
+
+function kitEmbedScriptUrl(uid: string): string {
+  try {
+    const host = new URL(site.url).hostname.replace(/^www\./, "");
+    const slug = host.split(".")[0] ?? "offervaluewithinnocent";
+    return `https://${slug}.kit.com/${encodeURIComponent(uid)}/index.js`;
+  } catch {
+    return `https://offervaluewithinnocent.kit.com/${encodeURIComponent(uid)}/index.js`;
+  }
+}
+
+async function resolveFromPublicEmbed(uid: string): Promise<string | null> {
+  const response = await fetch(kitEmbedScriptUrl(uid));
+  if (!response.ok) {
+    return null;
+  }
+  const script = await response.text();
+  const match =
+    script.match(/data-sv-form=\\"(\d+)\\"/) ??
+    script.match(/data-sv-form="(\d+)"/) ??
+    script.match(/forms\/(\d+)\/subscriptions/);
+  return match?.[1] ?? null;
+}
+
+async function resolveNumericFormId(formRef: string): Promise<string> {
   if (/^\d+$/.test(formRef)) {
     return formRef;
   }
@@ -85,28 +145,17 @@ async function resolveNumericFormId(apiKey: string, formRef: string): Promise<st
     return resolvedFormId;
   }
 
-  const v4 = await fetch("https://api.kit.com/v4/forms?per_page=500", {
-    headers: { "X-Kit-Api-Key": apiKey },
-  });
-  if (v4.ok) {
-    const body = await parseJson(v4);
-    const match = body.forms?.find((form) => formMatches(form, formRef));
-    if (match?.id) {
-      resolvedFormId = String(match.id);
-      return resolvedFormId;
-    }
+  const forms = await listForms();
+  const match = forms.find((form) => formMatches(form, formRef));
+  if (match?.id) {
+    resolvedFormId = String(match.id);
+    return resolvedFormId;
   }
 
-  const v3 = await fetch(
-    `https://api.convertkit.com/v3/forms?api_secret=${encodeURIComponent(apiKey)}`,
-  );
-  if (v3.ok) {
-    const body = await parseJson(v3);
-    const match = body.forms?.find((form) => formMatches(form, formRef));
-    if (match?.id) {
-      resolvedFormId = String(match.id);
-      return resolvedFormId;
-    }
+  const fromEmbed = await resolveFromPublicEmbed(formRef);
+  if (fromEmbed) {
+    resolvedFormId = fromEmbed;
+    return resolvedFormId;
   }
 
   throw new Error("Kit form was not found. Check KIT_FORM_ID.");
@@ -117,7 +166,7 @@ async function subscribeV4(
   formId: string,
   email: string,
   firstName?: string,
-): Promise<KitSubscriber> {
+): Promise<string> {
   const createPayload: Record<string, string> = { email_address: email };
   if (firstName) {
     createPayload.first_name = firstName;
@@ -152,19 +201,23 @@ async function subscribeV4(
     throw new Error(errorText(addedBody, "Kit could not add this email to the form."));
   }
 
-  return addedBody.subscriber ?? createdBody.subscriber ?? {};
+  return addedBody.subscriber?.state ?? createdBody.subscriber?.state ?? "inactive";
 }
 
 async function subscribeV3(
-  apiKey: string,
   formId: string,
   email: string,
   firstName?: string,
 ): Promise<string> {
-  const payload: Record<string, string> = {
-    api_secret: apiKey,
-    email,
-  };
+  const payload: Record<string, string> = { email };
+  const publicKey = kitPublicKey();
+  const secret = kitSecret();
+  if (publicKey) {
+    payload.api_key = publicKey;
+  }
+  if (secret) {
+    payload.api_secret = secret;
+  }
   if (firstName) {
     payload.first_name = firstName;
   }
@@ -178,7 +231,7 @@ async function subscribeV3(
   if (!response.ok) {
     throw new Error(errorText(body, "Kit request failed"));
   }
-  return body.subscription?.state ?? body.subscriber?.state ?? "";
+  return body.subscription?.state ?? body.subscriber?.state ?? "inactive";
 }
 
 function toSubscribeState(state: string): SubscribeState {
@@ -195,25 +248,24 @@ export async function subscribeToKit(
   email: string,
   firstName?: string,
 ): Promise<SubscribeState> {
-  const apiKey = kitKey();
   const formRef = kitFormRef();
 
-  if (!apiKey || !formRef) {
+  if (!kitConfigured()) {
     return { status: "closed", message: copy.subscribeClosed };
   }
 
   try {
-    const formId = await resolveNumericFormId(apiKey, formRef);
-
+    const formId = await resolveNumericFormId(formRef);
     const result = await withBackoff(
       async () => {
-        try {
-          const subscriber = await subscribeV4(apiKey, formId, email, firstName);
-          return subscriber.state ?? "inactive";
-        } catch (v4Error) {
-          console.error("Kit v4 subscribe failed, trying v3:", v4Error);
-          return subscribeV3(apiKey, formId, email, firstName);
+        if (kitPublicKey()) {
+          return subscribeV3(formId, email, firstName);
         }
+        const v4Key = kitSecret();
+        if (!v4Key) {
+          throw new Error("Kit is missing an API key.");
+        }
+        return subscribeV4(v4Key, formId, email, firstName);
       },
       { retries: 1, baseDelayMs: 400 },
     );
