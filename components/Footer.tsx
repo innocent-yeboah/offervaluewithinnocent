@@ -28,7 +28,10 @@ export default function SiteFooter() {
             LinkedIn
           </a>
         </p>
-        <p className="flex gap-6">
+        <p className="flex flex-wrap gap-6">
+          <Link href="/saved" className="inline-flex min-h-11 items-center hover:text-ink">
+            Saved
+          </Link>
           <Link href="/privacy" className="inline-flex min-h-11 items-center hover:text-ink">
             Privacy
           </Link>

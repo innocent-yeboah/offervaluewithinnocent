@@ -149,6 +149,30 @@ export async function searchLiveArticles(
   return (data as Article[]).map(withReading);
 }
 
+export async function getContinueArticle(excludeSlug: string): Promise<PublicArticle | null> {
+  const supabase = createAnonClient();
+  if (!supabase) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("articles")
+    .select(publicSelect)
+    .eq("status", "published")
+    .lte("published_at", nowIso())
+    .neq("slug", excludeSlug)
+    .order("published_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Failed to load next article:", error.message);
+    return null;
+  }
+
+  return data ? withReading(data as Article) : null;
+}
+
 export async function getRelatedArticles(
   theme: ThemeSlug,
   excludeSlug: string,

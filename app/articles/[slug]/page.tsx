@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import ArticleCard from "@/components/ArticleCard";
 import MarkdownBody from "@/components/MarkdownBody";
-import SharePiece from "@/components/SharePiece";
+import ArticleActions from "@/components/ArticleActions";
 import SubscribeInvite from "@/components/SubscribeInvite";
 import {
   articleShareDescription,
+  getContinueArticle,
   getLiveArticleBySlug,
   getRelatedArticles,
 } from "@/lib/articles";
@@ -68,6 +70,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   }
 
   const related = await getRelatedArticles(article.theme, article.slug);
+  const nextPiece = await getContinueArticle(article.slug);
+  const moreInTheme = nextPiece
+    ? related.filter((item) => item.slug !== nextPiece.slug)
+    : related;
   const kitOpen = isKitConfigured();
   const mailto = `mailto:${site.email}?subject=${encodeURIComponent(article.title)}`;
 
@@ -102,23 +108,37 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <MarkdownBody markdown={article.body_markdown} />
       </div>
 
-      <div className="mt-12 flex flex-col gap-5 border-t border-line pt-8 sm:flex-row sm:items-start sm:justify-between">
-        <p className="text-muted">
-          {copy.writeMe}{" "}
-          <a className="break-all text-link underline-offset-4 hover:underline" href={mailto}>
-            {site.email}
-          </a>
-        </p>
-        <SharePiece title={article.title} text={articleShareDescription(article)} />
-      </div>
+      <ArticleActions
+        slug={article.slug}
+        title={article.title}
+        text={articleShareDescription(article)}
+      />
 
-      {related.length > 0 ? (
+      <p className="mt-10 text-muted">
+        {copy.writeMe}{" "}
+        <a className="break-all text-link underline-offset-4 hover:underline" href={mailto}>
+          {site.email}
+        </a>
+      </p>
+
+      {nextPiece ? (
+        <section className="mt-12" aria-labelledby="continue-heading">
+          <h2 id="continue-heading" className="font-serif text-xl font-semibold">
+            {copy.continueWith}
+          </h2>
+          <div className="mt-4">
+            <ArticleCard article={nextPiece} />
+          </div>
+        </section>
+      ) : null}
+
+      {moreInTheme.length > 0 ? (
         <section className="mt-10" aria-labelledby="related-heading">
           <h2 id="related-heading" className="font-serif text-xl font-semibold">
             More in {themeLabel(article.theme)}
           </h2>
           <ul className="mt-3 space-y-2">
-            {related.map((item) => (
+            {moreInTheme.map((item) => (
               <li key={item.slug}>
                 <Link href={`/articles/${item.slug}`} className="text-link hover:underline">
                   {item.title}

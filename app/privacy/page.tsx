@@ -24,6 +24,10 @@ export default function PrivacyPage() {
           may also receive a copy by email.
         </p>
         <p>
+          If you mark a piece as read or save it for later, that stays in this browser only. I do
+          not receive it.
+        </p>
+        <p>
           The site uses Vercel Analytics to see which pages are read — not to follow you around the
           web, and not to sell anything. There is no cookie banner because this is kept light on
           purpose.

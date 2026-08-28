@@ -62,8 +62,15 @@ export const copy = {
   subscribeActive:
     "You’re on the list. Each week I’ll send a short note with a link to the new piece.",
   tryAgain: "Let’s try that again together?",
-  writeMe: "If this met you, write me.",
+  continueWith: "Continue with",
+  shareArticle: "Share this article",
+  markRead: "Mark as read",
+  markedRead: "Marked as read",
+  saveLater: "Save for later",
+  savedLater: "Saved for later",
   linkCopied: "Link copied. You can paste it anywhere.",
+  savedEmpty: "Nothing saved on this device yet. Open a piece and tap Save for later.",
+  savedOnDevice: "Saved on this device only. Not tied to an email or account.",
   kitAfterLive: "Send this week’s note in Kit when you are ready.",
   scheduledHint:
     "Readers will see this only after that time. Check in a private window.",
