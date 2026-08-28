@@ -209,15 +209,18 @@ async function subscribeV3(
   email: string,
   firstName?: string,
 ): Promise<string> {
-  const payload: Record<string, string> = { email };
   const publicKey = kitPublicKey();
-  const secret = kitSecret();
-  if (publicKey) {
-    payload.api_key = publicKey;
+  if (!publicKey) {
+    throw new Error("Kit is missing the public API key.");
   }
-  if (secret) {
-    payload.api_secret = secret;
-  }
+
+  // Public api_key only. Sending api_secret makes Kit treat this as an import
+  // and skip the confirmation (incentive) email.
+  const payload: Record<string, string> = {
+    api_key: publicKey,
+    email,
+    referrer: `${site.url}/newsletter`,
+  };
   if (firstName) {
     payload.first_name = firstName;
   }

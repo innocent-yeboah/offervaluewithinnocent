@@ -43,7 +43,23 @@ export default async function HomePage() {
         </ul>
       </section>
 
-      <section className="mt-14" aria-labelledby="latest-heading">
+      <p className="mt-14 text-base leading-relaxed text-pretty text-ink">
+        Start here:{" "}
+        {latest[0] ? (
+          <Link href={`/articles/${latest[0].slug}`} className="text-link hover:underline">
+            Read the latest article
+          </Link>
+        ) : (
+          "Read the latest article"
+        )}
+        , or{" "}
+        <a href="#weekly-list" className="text-link hover:underline">
+          join the weekly list
+        </a>
+        .
+      </p>
+
+      <section className="mt-8" aria-labelledby="latest-heading">
         <h2 id="latest-heading" className="font-serif text-2xl font-semibold">
           Latest writing
         </h2>
@@ -67,7 +83,7 @@ export default async function HomePage() {
         </p>
       </section>
 
-      <section className="mt-14">
+      <section className="mt-14" id="weekly-list" aria-label="Join the weekly list">
         <SubscribeInvite kitOpen={kitOpen} />
       </section>
     </main>

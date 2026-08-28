@@ -63,6 +63,7 @@ export default function SubscribeInvite({ kitOpen }: SubscribeInviteProps) {
           {pending ? "Sending…" : "Join"}
         </button>
       </form>
+      <p className="mt-3 text-sm leading-relaxed text-muted">{copy.subscribeQuiet}</p>
       {state.status === "confirm" || state.status === "active" || state.status === "error" || state.status === "closed" ? (
         <p className="mt-3 text-sm" role="status">
           {state.message}

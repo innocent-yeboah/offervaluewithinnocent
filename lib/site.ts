@@ -48,11 +48,12 @@ export const copy = {
   weeklyPromise: "New writing each week.",
   newsletterWhat:
     "Each week I’ll send a short note with a link to the new piece. The reading happens here.",
+  subscribeQuiet: "No spam. No hype. Just one thoughtful note each week.",
   emptyArticles:
     "There are no pieces here yet. I have promised new writing each week. The first one will live on this page.",
   subscribeClosed: "Subscriptions aren’t open just yet.",
   subscribeConfirm:
-    "Check your email to confirm. You are not on the list until you click that link.",
+    "Check your email to confirm. You are not on the list until you click that link. If it is not there, look in spam.",
   subscribeActive:
     "You’re on the list. Each week I’ll send a short note with a link to the new piece.",
   tryAgain: "Let’s try that again together?",
