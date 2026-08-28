@@ -4,31 +4,25 @@ import { site } from "@/lib/site";
 export default function SiteFooter() {
   return (
     <footer className="mt-12 border-t border-line sm:mt-16">
-      <div className="site-pad mx-auto flex max-w-3xl flex-col gap-4 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between sm:py-10">
-        <p className="leading-relaxed">
-          {site.author}
-          <span className="mx-2" aria-hidden="true">
-            ·
-          </span>
+      <div className="site-pad mx-auto flex max-w-3xl flex-col gap-6 py-8 text-sm text-muted sm:flex-row sm:items-end sm:justify-between sm:py-10">
+        <div className="flex flex-col gap-2">
+          <p>{site.author}</p>
           <a
             className="break-all text-link underline-offset-4 hover:underline"
             href={`mailto:${site.email}`}
           >
             {site.email}
           </a>
-          <span className="mx-2" aria-hidden="true">
-            ·
-          </span>
           <a
-            className="text-link underline-offset-4 hover:underline"
+            className="w-fit text-link underline-offset-4 hover:underline"
             href={site.linkedin}
             target="_blank"
             rel="noopener noreferrer"
           >
             LinkedIn
           </a>
-        </p>
-        <p className="flex flex-wrap gap-6">
+        </div>
+        <nav className="flex flex-wrap gap-x-5 gap-y-1" aria-label="Footer">
           <Link href="/saved" className="inline-flex min-h-11 items-center hover:text-ink">
             Saved
           </Link>
@@ -38,7 +32,7 @@ export default function SiteFooter() {
           <Link href="/feed.xml" className="inline-flex min-h-11 items-center hover:text-ink">
             RSS
           </Link>
-        </p>
+        </nav>
       </div>
     </footer>
   );

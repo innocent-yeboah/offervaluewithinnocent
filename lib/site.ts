@@ -62,6 +62,7 @@ export const copy = {
   subscribeActive:
     "You’re on the list. Each week I’ll send a short note with a link to the new piece.",
   tryAgain: "Let’s try that again together?",
+  writeMe: "If this met you, write me.",
   continueWith: "Continue with",
   shareArticle: "Share this article",
   markRead: "Mark as read",

@@ -51,7 +51,6 @@ export default async function ArticleOpenGraphImage({ params }: ImageProps) {
         }}
       >
         {cover ? (
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={cover}
             alt=""
