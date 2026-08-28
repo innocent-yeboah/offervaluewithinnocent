@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import AuthorPortrait from "@/components/AuthorPortrait";
 import { copy, site, themeToneClass, themes } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -11,8 +12,13 @@ export default function AboutPage() {
   return (
     <main id="main" className="site-pad mx-auto max-w-3xl py-10 sm:py-16">
       <h1 className="font-serif text-[1.85rem] font-semibold tracking-tight sm:text-4xl">About</h1>
+      <div className="mt-8 flex flex-col items-start gap-6 sm:flex-row sm:gap-8">
+        <AuthorPortrait size="about" />
+        <p className="text-base leading-relaxed text-pretty text-ink sm:pt-2 sm:text-lg">
+          I’m {site.author}. I write as a fellow traveler, not as someone who has arrived.
+        </p>
+      </div>
       <div className="mt-8 space-y-5 text-base leading-relaxed text-pretty text-ink sm:text-lg">
-        <p>I’m {site.author}. I write as a fellow traveler, not as someone who has arrived.</p>
         <p>
           I am learning, in public, how to offer value from the inside out — without hustling to
           prove worth. The writing stays with value, habits, relationships, awareness, money,

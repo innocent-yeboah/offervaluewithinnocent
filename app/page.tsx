@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ArticleCard from "@/components/ArticleCard";
+import AuthorPortrait from "@/components/AuthorPortrait";
 import SubscribeInvite from "@/components/SubscribeInvite";
 import { getLiveArticles } from "@/lib/articles";
 import { isKitConfigured } from "@/lib/kit";
@@ -18,10 +19,13 @@ export default async function HomePage() {
       <h1 className="font-serif mt-4 text-[1.85rem] font-semibold leading-tight tracking-tight text-balance text-ink sm:text-4xl lg:text-5xl">
         {site.headline}
       </h1>
-      <p className="mt-6 max-w-2xl text-base leading-relaxed text-pretty text-muted sm:text-lg">
-        I’m {site.author}. I write as a fellow traveler — still learning how to live with value,
-        honesty, and service. If that is your path too, you are welcome here.
-      </p>
+      <div className="mt-8 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
+        <AuthorPortrait size="home" />
+        <p className="max-w-2xl text-base leading-relaxed text-pretty text-muted sm:text-lg">
+          I’m {site.author}. I write as a fellow traveler — still learning how to live with value,
+          honesty, and service. If that is your path too, you are welcome here.
+        </p>
+      </div>
 
       <section className="mt-14" aria-labelledby="themes-heading">
         <h2 id="themes-heading" className="font-serif text-2xl font-semibold">
