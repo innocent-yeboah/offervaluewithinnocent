@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { copy, site, themes } from "@/lib/site";
+import Link from "next/link";
+import { copy, site, themeToneClass, themes } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
@@ -17,9 +18,16 @@ export default function AboutPage() {
           prove worth. The writing stays with value, habits, relationships, awareness, money,
           purpose, focus, and service.
         </p>
-        <ul className="grid grid-cols-2 gap-2 text-base text-muted sm:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {themes.map((theme) => (
-            <li key={theme.slug}>{theme.label}</li>
+            <li key={theme.slug}>
+              <Link
+                href={`/articles?theme=${theme.slug}`}
+                className={`theme-chip ${themeToneClass(theme.slug)} inline-flex min-h-9 w-full items-center justify-center rounded-md border px-2 py-2 text-sm`}
+              >
+                {theme.label}
+              </Link>
+            </li>
           ))}
         </ul>
         <p>

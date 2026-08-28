@@ -1,6 +1,6 @@
 import { createAnonClient } from "@/lib/supabase-anon";
 import { publicSupabaseUrl } from "@/lib/env";
-import { isThemeSlug, type ThemeSlug } from "@/lib/site";
+import { isThemeSlug, site, type ThemeSlug } from "@/lib/site";
 import { readingMinutes } from "@/lib/read-time";
 
 export type Article = {
@@ -49,6 +49,11 @@ function withReading(article: Article): PublicArticle {
     cover_image_path: coverUrl(article.cover_image_path),
     reading_minutes: readingMinutes(article.body_markdown),
   };
+}
+
+export function articleShareDescription(article: PublicArticle): string {
+  const excerpt = article.excerpt?.trim();
+  return excerpt || site.headline;
 }
 
 /**

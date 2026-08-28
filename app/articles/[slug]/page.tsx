@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import MarkdownBody from "@/components/MarkdownBody";
 import SubscribeInvite from "@/components/SubscribeInvite";
-import { getLiveArticleBySlug, getRelatedArticles } from "@/lib/articles";
+import {
+  articleShareDescription,
+  getLiveArticleBySlug,
+  getRelatedArticles,
+} from "@/lib/articles";
 import { formatArticleDate } from "@/lib/dates";
 import { isKitConfigured } from "@/lib/kit";
-import { copy, site, themeLabel } from "@/lib/site";
+import { copy, site, themeLabel, themeToneClass } from "@/lib/site";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -20,9 +24,38 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   if (!article) {
     return { title: "Let’s try that again together?" };
   }
+  const description = articleShareDescription(article);
+  const url = `${site.url}/articles/${article.slug}`;
+  const shareImage = article.cover_image_path
+    ? { url: article.cover_image_path, alt: article.title }
+    : {
+        url: `/articles/${article.slug}/opengraph-image`,
+        alt: article.title,
+        width: 1200,
+        height: 630,
+      };
+
   return {
     title: article.title,
-    description: article.excerpt ?? site.headline,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      title: article.title,
+      description,
+      url,
+      siteName: site.name,
+      locale: "en",
+      publishedTime: article.published_at ?? undefined,
+      authors: [site.author],
+      images: [shareImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description,
+      images: [shareImage.url],
+    },
   };
 }
 
@@ -40,7 +73,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <main id="main" className="site-pad mx-auto max-w-3xl py-10 sm:py-16">
       <p className="text-xs uppercase leading-relaxed tracking-wide text-muted">
-        {themeLabel(article.theme)}
+        <span className={`theme-mark ${themeToneClass(article.theme)} inline-flex items-center gap-1.5`}>
+          <span className="theme-dot" aria-hidden="true" />
+          {themeLabel(article.theme)}
+        </span>
         <span className="mx-2" aria-hidden="true">
           ·
         </span>
@@ -57,7 +93,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={article.cover_image_path}
-          alt=""
+          alt={article.title}
           className="mt-8 h-auto w-full rounded-md"
         />
       ) : null}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ArticleCard from "@/components/ArticleCard";
 import { searchLiveArticles } from "@/lib/articles";
-import { copy, isThemeSlug, themes } from "@/lib/site";
+import { copy, isThemeSlug, themeToneClass, themes } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -58,7 +58,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
           <li key={item.slug} className="shrink-0">
             <Link
               href={`/articles?theme=${item.slug}${q ? `&q=${encodeURIComponent(q)}` : ""}`}
-              className={`inline-flex min-h-9 items-center rounded-full border px-3 py-1 text-xs ${theme === item.slug ? "border-ink text-ink" : "border-line text-muted"}`}
+              className={`theme-chip ${themeToneClass(item.slug)} inline-flex min-h-9 items-center rounded-full border px-3 py-1 text-xs ${theme === item.slug ? "is-on" : ""}`}
             >
               {item.label}
             </Link>

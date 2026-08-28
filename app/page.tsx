@@ -1,8 +1,9 @@
 import Link from "next/link";
+import ArticleCard from "@/components/ArticleCard";
 import SubscribeInvite from "@/components/SubscribeInvite";
 import { getLiveArticles } from "@/lib/articles";
 import { isKitConfigured } from "@/lib/kit";
-import { copy, site, themes } from "@/lib/site";
+import { copy, site, themeToneClass, themes } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +35,7 @@ export default async function HomePage() {
             <li key={theme.slug}>
               <Link
                 href={`/articles?theme=${theme.slug}`}
-                className="flex min-h-12 items-center rounded-md border border-line px-3 py-3 text-sm text-ink hover:border-gold"
+                className={`theme-tile ${themeToneClass(theme.slug)} flex min-h-12 items-center rounded-md border px-3 py-3 pl-4 text-sm font-medium`}
               >
                 {theme.label}
               </Link>
@@ -66,15 +67,11 @@ export default async function HomePage() {
         {latest.length === 0 ? (
           <p className="mt-4 text-muted">{copy.emptyArticles}</p>
         ) : (
-          <ul className="mt-4 space-y-3">
+          <div className="mt-6">
             {latest.map((article) => (
-              <li key={article.slug}>
-                <Link href={`/articles/${article.slug}`} className="text-link hover:underline">
-                  {article.title}
-                </Link>
-              </li>
+              <ArticleCard key={article.slug} article={article} />
             ))}
-          </ul>
+          </div>
         )}
         <p className="mt-4">
           <Link href="/articles" className="text-sm text-muted hover:text-ink">

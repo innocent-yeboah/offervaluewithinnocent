@@ -36,6 +36,10 @@ export function themeLabel(slug: string): string {
   return themes.find((theme) => theme.slug === slug)?.label ?? slug;
 }
 
+export function themeToneClass(slug: string): string {
+  return isThemeSlug(slug) ? `theme-${slug}` : "theme-value";
+}
+
 export const navLinks = [
   { href: "/", label: "Home" },
   { href: "/articles", label: "Articles" },

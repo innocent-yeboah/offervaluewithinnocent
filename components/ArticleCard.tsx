@@ -1,13 +1,16 @@
 import Link from "next/link";
 import { formatArticleDate } from "@/lib/dates";
-import { themeLabel } from "@/lib/site";
+import { themeLabel, themeToneClass } from "@/lib/site";
 import type { PublicArticle } from "@/lib/articles";
 
 export default function ArticleCard({ article }: { article: PublicArticle }) {
   return (
     <article className="border-b border-line py-6 first:pt-0">
       <p className="text-xs uppercase leading-relaxed tracking-wide text-muted">
-        {themeLabel(article.theme)}
+        <span className={`theme-mark ${themeToneClass(article.theme)} inline-flex items-center gap-1.5`}>
+          <span className="theme-dot" aria-hidden="true" />
+          {themeLabel(article.theme)}
+        </span>
         <span className="mx-2" aria-hidden="true">
           ·
         </span>
