@@ -7,7 +7,6 @@ import WritingHelp from "@/components/admin/WritingHelp";
 import { revalidateArticles } from "@/app/actions";
 import { visibilityLabel } from "@/lib/dates";
 import { copy, themes, type ThemeSlug } from "@/lib/site";
-import { articlePublicUrl, linkedinShareHref } from "@/lib/share";
 import { createSupabaseBrowser } from "@/lib/supabase-browser";
 
 type EditorArticle = {
@@ -147,7 +146,7 @@ export default function ArticleEditor({
       router.refresh();
 
       if (intent === "now") {
-        setMessage(`Live. ${copy.kitAfterLive} ${copy.linkedinHint}`);
+        setMessage(`Live. ${copy.kitAfterLive}`);
       } else if (intent === "schedule") {
         const url = `${window.location.origin}/articles/${payload.slug}`;
         setMessage(`Scheduled. Public URL: ${url}. ${copy.scheduledHint}`);
@@ -200,22 +199,6 @@ export default function ArticleEditor({
       <p className="text-sm text-muted">
         Status: <strong className="text-ink">{label}</strong>
       </p>
-      {label === "Live" && slug ? (
-        <p className="text-sm text-muted">
-          {copy.linkedinHint}{" "}
-          <a
-            href={linkedinShareHref(
-              articlePublicUrl(slugify(slug) || slug, window.location.origin),
-            )}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-link underline-offset-4 hover:underline"
-          >
-            {copy.linkedinShare}
-          </a>
-          .
-        </p>
-      ) : null}
       <label className="flex flex-col gap-1 text-sm">
         Title
         <input

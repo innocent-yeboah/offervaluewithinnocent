@@ -64,8 +64,6 @@ export const copy = {
   writeMe: "If this met you, write me.",
   linkCopied: "Link copied. You can paste it anywhere.",
   kitAfterLive: "Send this week’s note in Kit when you are ready.",
-  linkedinShare: "Share on LinkedIn",
-  linkedinHint: "A short note plus the link. The reading stays here.",
   scheduledHint:
     "Readers will see this only after that time. Check in a private window.",
   bookQuiet:
