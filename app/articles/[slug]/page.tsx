@@ -4,6 +4,7 @@ import ArticleCard from "@/components/ArticleCard";
 import MarkdownBody from "@/components/MarkdownBody";
 import ArticleActions from "@/components/ArticleActions";
 import SubscribeInvite from "@/components/SubscribeInvite";
+import ArticleThoughts from "@/components/ArticleThoughts";
 import {
   articleShareDescription,
   getContinueArticle,
@@ -13,6 +14,7 @@ import {
 import { formatArticleDate } from "@/lib/dates";
 import { isKitConfigured } from "@/lib/kit";
 import { copy, site, themeLabel, themeToneClass } from "@/lib/site";
+import { getPublishedThoughts } from "@/lib/thoughts";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -71,6 +73,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   const related = await getRelatedArticles(article.theme, article.slug);
   const nextPiece = await getContinueArticle(article.slug);
+  const thoughts = await getPublishedThoughts(article.id);
   const moreInTheme = nextPiece
     ? related.filter((item) => item.slug !== nextPiece.slug)
     : related;
@@ -120,6 +123,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           {site.email}
         </a>
       </p>
+
+      <ArticleThoughts slug={article.slug} thoughts={thoughts} />
 
       {nextPiece ? (
         <section className="mt-12" aria-labelledby="continue-heading">

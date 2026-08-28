@@ -62,6 +62,8 @@ export const copy = {
   subscribeActive:
     "You’re on the list. Each week I’ll send a short note with a link to the new piece.",
   tryAgain: "Let’s try that again together?",
+  slowDown:
+    "That’s a few tries in a short time. Pause, then come back — I’ll still be here.",
   writeMe: "If this met you, write me.",
   continueWith: "Continue with",
   shareArticle: "Share this article",
@@ -81,4 +83,11 @@ export const copy = {
     "Writing help isn’t open yet. A free Gemini key will open it until you’re ready for Claude.",
   writingHelpHint:
     "Ask for a first draft, or for help shaping what you wrote. You still save and publish. Nothing is sent to readers.",
+  thoughtsHeading: "Thoughts on this piece",
+  thoughtsIntro:
+    "If something here met you, you can leave a few words. I read each one before it appears.",
+  thoughtsEmpty: "No thoughts here yet. Yours can be the first.",
+  thoughtsShare: "Share a thought",
+  thoughtsThanks:
+    "Thank you. I’ll read this, and if it belongs with the piece, it will appear here.",
 } as const;

@@ -21,7 +21,13 @@ export default function PrivacyPage() {
         </p>
         <p>
           If you use the contact form, I store your name, email, and message so I can write back. I
-          may also receive a copy by email.
+          may also receive a copy by email. Join and Contact are limited so a noisy script cannot
+          fill the inbox.
+        </p>
+        <p>
+          If you leave a thought on a piece, I store your name, your words, and your email if you
+          share it. Email is so I can write back. It is never shown on the page. Thoughts are limited
+          so a noisy script cannot fill the page, and I read each one before it appears.
         </p>
         <p>
           If you mark a piece as read or save it for later, that stays in this browser only. I do
