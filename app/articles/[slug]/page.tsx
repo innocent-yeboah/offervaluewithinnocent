@@ -78,7 +78,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     ? related.filter((item) => item.slug !== nextPiece.slug)
     : related;
   const kitOpen = isKitConfigured();
-  const mailto = `mailto:${site.email}?subject=${encodeURIComponent(article.title)}`;
 
   return (
     <main id="main" className="site-pad mx-auto max-w-3xl py-10 sm:py-16">
@@ -116,13 +115,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         title={article.title}
         text={articleShareDescription(article)}
       />
-
-      <p className="mt-10 text-muted">
-        {copy.writeMe}{" "}
-        <a className="break-all text-link underline-offset-4 hover:underline" href={mailto}>
-          {site.email}
-        </a>
-      </p>
 
       <ArticleThoughts slug={article.slug} thoughts={thoughts} />
 
