@@ -16,6 +16,15 @@ export default function ContactPage() {
         <a className="break-all text-link underline-offset-4 hover:underline" href={`mailto:${site.email}`}>
           {site.email}
         </a>
+        . I am also on{" "}
+        <a
+          className="text-link underline-offset-4 hover:underline"
+          href={site.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          LinkedIn
+        </a>
         .
       </p>
       <ContactForm />

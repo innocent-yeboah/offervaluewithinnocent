@@ -10,6 +10,7 @@ export const site = {
   tagline: "Weekly writing on value, habits, relationships, and service.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://offervaluewithinnocent.com",
   email: "hello@offervaluewithinnocent.com",
+  linkedin: "https://www.linkedin.com/in/innocent-golden",
   locale: "en",
 } as const;
 

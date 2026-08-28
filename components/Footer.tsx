@@ -16,6 +16,17 @@ export default function SiteFooter() {
           >
             {site.email}
           </a>
+          <span className="mx-2" aria-hidden="true">
+            ·
+          </span>
+          <a
+            className="text-link underline-offset-4 hover:underline"
+            href={site.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn
+          </a>
         </p>
         <p className="flex gap-6">
           <Link href="/privacy" className="inline-flex min-h-11 items-center hover:text-ink">

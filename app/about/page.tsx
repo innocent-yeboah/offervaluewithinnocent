@@ -31,8 +31,20 @@ export default function AboutPage() {
           ))}
         </ul>
         <p>
-          If you are walking a similar path, you are welcome here. Join the weekly list, or write
-          me at <span className="break-all">{site.email}</span>.
+          If you are walking a similar path, you are welcome here. Join the weekly list, write me at{" "}
+          <a className="break-all text-link underline-offset-4 hover:underline" href={`mailto:${site.email}`}>
+            {site.email}
+          </a>
+          , or find me on{" "}
+          <a
+            className="text-link underline-offset-4 hover:underline"
+            href={site.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn
+          </a>
+          .
         </p>
         <p className="text-muted">{copy.bookQuiet}</p>
       </div>
