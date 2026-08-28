@@ -62,6 +62,7 @@ export const copy = {
     "You’re on the list. Each week I’ll send a short note with a link to the new piece.",
   tryAgain: "Let’s try that again together?",
   writeMe: "If this met you, write me.",
+  linkCopied: "Link copied. You can paste it anywhere.",
   kitAfterLive: "Send this week’s note in Kit when you are ready.",
   scheduledHint:
     "Readers will see this only after that time. Check in a private window.",

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import MarkdownBody from "@/components/MarkdownBody";
+import SharePiece from "@/components/SharePiece";
 import SubscribeInvite from "@/components/SubscribeInvite";
 import {
   articleShareDescription,
@@ -101,12 +102,15 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <MarkdownBody markdown={article.body_markdown} />
       </div>
 
-      <p className="mt-12 border-t border-line pt-8 text-muted">
-        {copy.writeMe}{" "}
-        <a className="break-all text-link underline-offset-4 hover:underline" href={mailto}>
-          {site.email}
-        </a>
-      </p>
+      <div className="mt-12 flex flex-col gap-5 border-t border-line pt-8 sm:flex-row sm:items-start sm:justify-between">
+        <p className="text-muted">
+          {copy.writeMe}{" "}
+          <a className="break-all text-link underline-offset-4 hover:underline" href={mailto}>
+            {site.email}
+          </a>
+        </p>
+        <SharePiece title={article.title} text={articleShareDescription(article)} />
+      </div>
 
       {related.length > 0 ? (
         <section className="mt-10" aria-labelledby="related-heading">
