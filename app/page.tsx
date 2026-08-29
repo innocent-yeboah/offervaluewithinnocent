@@ -22,8 +22,9 @@ export default async function HomePage() {
       <div className="mt-8 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
         <AuthorPortrait size="home" />
         <p className="max-w-2xl text-base leading-relaxed text-pretty text-muted sm:text-lg">
-          I’m {site.author}. I write as a fellow traveler — still learning how to live with value,
-          honesty, and service. If that is your path too, you are welcome here.
+          I’m {site.author}. I write as a fellow traveler, still learning. Not as an expert. If you
+          are trying to live with more honesty, deeper service, and lasting value, you are welcome
+          here.
         </p>
       </div>
 
