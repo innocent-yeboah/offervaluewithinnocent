@@ -285,3 +285,15 @@ html.dark .theme-service {
   border-radius: 999px;
   background: var(--theme-ink);
 }
+
+.site-footer {
+  background: color-mix(in srgb, var(--gold) 9%, var(--paper));
+}
+
+html.dark .site-footer {
+  background: color-mix(in srgb, var(--gold) 14%, var(--paper));
+}
+
+.footer-band {
+  background: var(--theme-line);
+}
