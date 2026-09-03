@@ -297,3 +297,22 @@ html.dark .site-footer {
 .footer-band {
   background: var(--theme-line);
 }
+
+.article-actions {
+  background: color-mix(in srgb, var(--gold) 8%, var(--paper));
+}
+
+html.dark .article-actions {
+  background: color-mix(in srgb, var(--gold) 12%, var(--paper));
+}
+
+.article-action {
+  min-height: 4rem;
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+@media (min-width: 640px) {
+  .article-action {
+    min-height: 4.35rem;
+  }
+}
