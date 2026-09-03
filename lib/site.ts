@@ -18,11 +18,11 @@ export const themes = [
   { slug: "value", label: "Value" },
   { slug: "habits", label: "Habits" },
   { slug: "relationship", label: "Relationship" },
+  { slug: "service", label: "Service" },
   { slug: "awareness", label: "Awareness" },
-  { slug: "money", label: "Money" },
   { slug: "purpose", label: "Purpose" },
   { slug: "focus", label: "Focus" },
-  { slug: "service", label: "Service" },
+  { slug: "money", label: "Money" },
 ] as const;
 
 export type ThemeSlug = (typeof themes)[number]["slug"];

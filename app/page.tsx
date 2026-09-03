@@ -33,7 +33,8 @@ export default async function HomePage() {
           What I write about
         </h2>
         <p className="mt-2 text-sm text-muted">
-          Eight parts of one journey. They describe the path, not a library that is already full.
+          Eight parts of one journey, in this order. They describe the path, not a library that is
+          already full.
         </p>
         <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {themes.map((theme) => (
