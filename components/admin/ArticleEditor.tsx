@@ -6,7 +6,7 @@ import MarkdownBody from "@/components/MarkdownBody";
 import WritingHelp from "@/components/admin/WritingHelp";
 import { revalidateArticles } from "@/app/actions";
 import { visibilityLabel } from "@/lib/dates";
-import { copy, themes, type ThemeSlug } from "@/lib/site";
+import { copy, site, themes, type ThemeSlug } from "@/lib/site";
 import { createSupabaseBrowser } from "@/lib/supabase-browser";
 
 type EditorArticle = {
@@ -61,8 +61,12 @@ export default function ArticleEditor({
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
   const [confirmRemove, setConfirmRemove] = useState(false);
+  const [justWentLive, setJustWentLive] = useState(false);
+  const [shareLinkStatus, setShareLinkStatus] = useState<"idle" | "copied" | "error">("idle");
 
   const label = visibilityLabel(article?.status ?? "draft", article?.published_at ?? null);
+  const showShareLink = label === "Live" || justWentLive;
+  const liveUrl = `${site.url.replace(/\/$/, "")}/articles/${slugify(slug || article?.slug || "")}`;
 
   const preview = useMemo(() => body, [body]);
 
@@ -101,6 +105,7 @@ export default function ArticleEditor({
     if (intent === "now") {
       status = "published";
       publishedAt = new Date().toISOString();
+      setJustWentLive(true);
     } else if (intent === "schedule") {
       if (!scheduleAt) {
         setMessage("Choose a date and time to schedule.");
@@ -109,6 +114,7 @@ export default function ArticleEditor({
       }
       status = "published";
       publishedAt = new Date(scheduleAt).toISOString();
+      setJustWentLive(false);
     }
 
     const payload = {
@@ -151,6 +157,7 @@ export default function ArticleEditor({
         const url = `${window.location.origin}/articles/${payload.slug}`;
         setMessage(`Scheduled. Public URL: ${url}. ${copy.scheduledHint}`);
       } else {
+        setJustWentLive(false);
         setMessage("Draft saved.");
       }
     } catch (error) {
@@ -313,6 +320,33 @@ export default function ArticleEditor({
           Schedule
         </button>
       </div>
+      {showShareLink && slugify(slug || article?.slug || "") ? (
+        <div className="rounded-md border border-line px-4 py-3">
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => {
+              void navigator.clipboard.writeText(liveUrl).then(
+                () => setShareLinkStatus("copied"),
+                () => setShareLinkStatus("error"),
+              );
+            }}
+            className="text-left text-sm text-link underline-offset-4 hover:underline"
+          >
+            {copy.adminCopyShareLink}
+          </button>
+          {shareLinkStatus === "copied" ? (
+            <p className="mt-2 text-sm text-muted" role="status">
+              {copy.adminShareLinkCopied}
+            </p>
+          ) : null}
+          {shareLinkStatus === "error" ? (
+            <p className="mt-2 text-sm text-muted" role="status">
+              {copy.tryAgain}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
       {article?.id ? (
         <div className="border-t border-line pt-4">
           {confirmRemove ? (
