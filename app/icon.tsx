@@ -1,27 +1,9 @@
 import { ImageResponse } from "next/og";
+import { BrandMark } from "@/lib/brand-icon";
 
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
 export default function Icon() {
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#1C1917",
-          color: "#FAF6F0",
-          fontSize: 20,
-          fontWeight: 700,
-        }}
-      >
-        O
-      </div>
-    ),
-    size,
-  );
+  return new ImageResponse(<BrandMark size={32} />, size);
 }

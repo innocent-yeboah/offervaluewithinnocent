@@ -5,6 +5,9 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
   : undefined;
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return [{ source: "/favicon.ico", destination: "/icon" }];
+  },
   images: {
     remotePatterns: supabaseHost
       ? [

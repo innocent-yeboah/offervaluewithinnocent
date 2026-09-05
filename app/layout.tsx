@@ -26,6 +26,10 @@ export const metadata: Metadata = {
   },
   description: site.headline,
   authors: [{ name: site.author }],
+  icons: {
+    icon: [{ url: "/icon", type: "image/png" }],
+    apple: [{ url: "/apple-icon", type: "image/png" }],
+  },
   openGraph: {
     type: "website",
     locale: "en",
