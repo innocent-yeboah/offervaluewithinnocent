@@ -233,6 +233,7 @@ export default function ArticleEditor({
           rows={2}
           className="rounded-md border border-line bg-paper px-3 py-2"
         />
+        <span className="text-muted">{copy.excerptHint}</span>
       </label>
       <label className="flex flex-col gap-1 text-sm">
         Theme

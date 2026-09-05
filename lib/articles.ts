@@ -51,9 +51,56 @@ function withReading(article: Article): PublicArticle {
   };
 }
 
+const SHARE_DESCRIPTION_LIMIT = 110;
+
+function plainFromMarkdown(markdown: string): string {
+  return markdown
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, " ")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/[*_~>]+/g, "")
+    .replace(/^\s*[-*]\s+/gm, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function firstSentence(text: string): string {
+  const match = text.match(/^(.+?[.!?])(\s|$)/);
+  return match?.[1]?.trim() ?? text.trim();
+}
+
+function clipShareText(text: string, limit: number): string {
+  const cleaned = text.replace(/\s+/g, " ").trim();
+  if (!cleaned) {
+    return "";
+  }
+  if (cleaned.length <= limit) {
+    return cleaned;
+  }
+  const slice = cleaned.slice(0, limit - 1);
+  const lastSpace = slice.lastIndexOf(" ");
+  const clipped = (lastSpace > 40 ? slice.slice(0, lastSpace) : slice).replace(
+    /[,:;.-]+$/u,
+    "",
+  );
+  return `${clipped}.`;
+}
+
+/**
+ * Short line for WhatsApp, LinkedIn, and Facebook. Never the home headline.
+ */
 export function articleShareDescription(article: PublicArticle): string {
   const excerpt = article.excerpt?.trim();
-  return excerpt || site.headline;
+  if (excerpt) {
+    return clipShareText(excerpt, SHARE_DESCRIPTION_LIMIT);
+  }
+  const fromBody = firstSentence(plainFromMarkdown(article.body_markdown));
+  if (fromBody) {
+    return clipShareText(fromBody, SHARE_DESCRIPTION_LIMIT);
+  }
+  return site.tagline;
 }
 
 /**

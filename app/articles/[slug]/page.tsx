@@ -31,14 +31,12 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   }
   const description = articleShareDescription(article);
   const url = `${site.url}/articles/${article.slug}`;
-  const shareImage = article.cover_image_path
-    ? { url: article.cover_image_path, alt: article.title }
-    : {
-        url: `/articles/${article.slug}/opengraph-image`,
-        alt: article.title,
-        width: 1200,
-        height: 630,
-      };
+  const shareImage = {
+    url: `/articles/${article.slug}/opengraph-image`,
+    alt: article.title,
+    width: 1200,
+    height: 630,
+  };
 
   return {
     title: article.title,

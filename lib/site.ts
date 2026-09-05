@@ -74,6 +74,8 @@ export const copy = {
   linkCopied: "Link copied. You can paste it anywhere.",
   savedEmpty: "Nothing saved on this device yet. Open a piece and tap Save for later.",
   savedOnDevice: "Saved on this device only. Not tied to an email or account.",
+  excerptHint:
+    "A short line for sharing. If you leave this empty, the first sentence of the piece is used.",
   kitAfterLive: "Send this week’s note in Kit when you are ready.",
   adminCopyShareLink: "Copy this link for LinkedIn and Facebook.",
   adminShareLinkCopied: "Copied. You can paste it on LinkedIn or Facebook.",
