@@ -140,9 +140,19 @@ export const copy = {
     "A saved thumbnail can be stored here after you apply the migration. Until then, the list uses the cover. With no cover, a simple mark is shown.",
   savedWithoutNewColumns:
     "Saved. The closing line or thumbnail needs the migration before it can be stored. The rest of the piece is saved.",
+  consultationSubject: "Free consultation",
+  consultationBody:
+    "Hello Innocent,\n\nI would like a free consultation.\n\nWhat I am trying to solve:\n\n",
 } as const;
 
 /** WhatsApp chat with a short note already written. */
 export function whatsappHref(): string {
   return `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(copy.whatsappNote)}`;
+}
+
+/** Plain mailto for a free consultation. The address is site.email. */
+export function consultationMailto(): string {
+  const subject = encodeURIComponent(copy.consultationSubject);
+  const body = encodeURIComponent(copy.consultationBody);
+  return `mailto:${site.email}?subject=${subject}&body=${body}`;
 }
