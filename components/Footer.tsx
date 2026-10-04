@@ -13,14 +13,14 @@ export default function SiteFooter() {
         ))}
       </div>
       <div className="site-footer border-t border-line">
-        <div className="site-pad mx-auto flex max-w-3xl flex-col gap-6 py-8 text-sm text-muted sm:flex-row sm:items-end sm:justify-between sm:py-10">
-          <div className="flex flex-col gap-2">
+        <div className="site-pad mx-auto flex max-w-3xl flex-col gap-8 py-8 text-sm text-muted sm:py-10 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex shrink-0 flex-col gap-2">
             <p className="flex items-center gap-2 font-serif text-base text-ink">
               <span className="theme-dot theme-value" aria-hidden="true" />
               {site.author}
             </p>
             <a
-              className="break-all text-link underline-offset-4 hover:underline"
+              className="text-link underline-offset-4 hover:underline"
               href={`mailto:${site.email}`}
             >
               {site.email}
