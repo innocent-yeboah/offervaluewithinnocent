@@ -9,7 +9,9 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <main id="main" className="site-pad mx-auto max-w-3xl py-10 sm:py-16">
-      <h1 className="font-serif text-[1.85rem] font-semibold tracking-tight sm:text-4xl">Privacy</h1>
+      <h1 className="font-serif text-[1.85rem] font-semibold leading-tight tracking-tight text-balance sm:text-4xl">
+        Privacy
+      </h1>
       <div className="mt-8 space-y-4 leading-relaxed text-ink">
         <p>
           This is a small writing site. I collect as little as I need to keep a conversation going.

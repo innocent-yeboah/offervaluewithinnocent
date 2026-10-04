@@ -112,17 +112,14 @@ function withReading(article: Article): PublicArticle {
 
 /**
  * Image for the articles list and the home lead.
- * A saved thumbnail wins. The lead piece can also use its cover.
- * Every other piece stays text in the list until a thumbnail is set.
+ * A saved thumbnail wins. Otherwise the cover is used, for every piece.
+ * Null means there is no photo yet. The list then shows a generated mark.
  */
 export function articleThumbnail(article: PublicArticle): string | null {
   if (article.thumbnail_path) {
     return article.thumbnail_path;
   }
-  if (article.slug === FLAGSHIP_SLUG) {
-    return article.cover_image_path;
-  }
-  return null;
+  return article.cover_image_path;
 }
 
 const SHARE_DESCRIPTION_LIMIT = 110;
