@@ -1,5 +1,5 @@
 /**
- * One palette for the site, the gold O, and share images.
+ * One palette for the site, the OV mark, and share images.
  * CSS variables in brandCss are applied from the root layout.
  * Flyer colors are kept where they clear WCAG AA. Where a flyer hex
  * fails as text or as a control, the note next to that value says so.
@@ -75,4 +75,8 @@ html.dark .theme-money { --theme-wash: #243028; --theme-line: #5E7A62; --theme-i
 html.dark .theme-purpose { --theme-wash: #222A40; --theme-line: #647EAA; --theme-ink: #E8ECF4; }
 html.dark .theme-focus { --theme-wash: #2A2840; --theme-line: #6E6A94; --theme-ink: #E8ECF4; }
 html.dark .theme-service { --theme-wash: #332C24; --theme-line: #8A7A3F; --theme-ink: #E8ECF4; }
+.logo-on-light { display: block; }
+.logo-on-dark { display: none; }
+html.dark .logo-on-light { display: none; }
+html.dark .logo-on-dark { display: block; }
 `;

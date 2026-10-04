@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 import { usePathname } from "next/navigation";
-import { navLinks, site } from "@/lib/site";
+import SiteLogo from "@/components/SiteLogo";
 import ThemeToggle from "@/components/ThemeToggle";
+import { navLinks } from "@/lib/site";
 
 export default function WarmNav() {
   const pathname = usePathname();
@@ -41,11 +42,8 @@ export default function WarmNav() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur-sm">
       <div className="site-pad mx-auto flex max-w-3xl items-center justify-between gap-3 py-3 sm:py-4">
-        <Link
-          href="/"
-          className="min-w-0 flex-1 font-serif text-base font-semibold leading-snug tracking-tight text-ink no-underline sm:text-lg lg:text-xl"
-        >
-          {site.name}
+        <Link href="/" className="inline-flex shrink-0 rounded-sm">
+          <SiteLogo size={44} priority />
         </Link>
         {isAdmin ? (
           <nav className="flex shrink-0 items-center gap-3 text-sm sm:gap-4" aria-label="Admin">
