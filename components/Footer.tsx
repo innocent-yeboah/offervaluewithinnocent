@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { site, themeToneClass, themes } from "@/lib/site";
+import { navLinks, site, themeToneClass, themes, whatsappHref } from "@/lib/site";
 
 export default function SiteFooter() {
   return (
@@ -27,6 +27,14 @@ export default function SiteFooter() {
             </a>
             <a
               className="w-fit text-link underline-offset-4 hover:underline"
+              href={whatsappHref()}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WhatsApp {site.whatsappDisplay}
+            </a>
+            <a
+              className="w-fit text-link underline-offset-4 hover:underline"
               href={site.linkedin}
               target="_blank"
               rel="noopener noreferrer"
@@ -35,6 +43,11 @@ export default function SiteFooter() {
             </a>
           </div>
           <nav className="flex flex-wrap gap-x-5 gap-y-1" aria-label="Footer">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="inline-flex min-h-11 items-center hover:text-ink">
+                {link.label}
+              </Link>
+            ))}
             <Link href="/saved" className="inline-flex min-h-11 items-center hover:text-ink">
               Saved
             </Link>

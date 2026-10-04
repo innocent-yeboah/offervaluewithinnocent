@@ -43,7 +43,7 @@ export default function WarmNav() {
       <div className="site-pad mx-auto flex max-w-3xl items-center justify-between gap-3 py-3 sm:py-4">
         <Link
           href="/"
-          className="min-w-0 font-serif text-base font-semibold leading-snug tracking-tight text-ink no-underline sm:text-xl"
+          className="min-w-0 flex-1 font-serif text-base font-semibold leading-snug tracking-tight text-ink no-underline sm:text-lg lg:text-xl"
         >
           {site.name}
         </Link>
@@ -59,7 +59,7 @@ export default function WarmNav() {
           </nav>
         ) : (
           <>
-            <nav className="hidden items-center gap-5 text-sm md:flex" aria-label="Main">
+            <nav className="hidden shrink-0 items-center gap-3 text-sm lg:flex" aria-label="Main">
               {publicLinks.map((link) => {
                 const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
                 return (
@@ -75,7 +75,7 @@ export default function WarmNav() {
               })}
               <ThemeToggle />
             </nav>
-            <div className="flex shrink-0 items-center gap-1 md:hidden">
+            <div className="flex shrink-0 items-center gap-1 lg:hidden">
               <ThemeToggle />
               <button
                 type="button"
@@ -96,7 +96,7 @@ export default function WarmNav() {
         )}
       </div>
       {open && !isAdmin ? (
-        <nav id={menuId} className="border-t border-line md:hidden" aria-label="Main">
+        <nav id={menuId} className="border-t border-line lg:hidden" aria-label="Main">
           <ul className="site-pad mx-auto flex max-w-3xl flex-col py-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
             {publicLinks.map((link) => {
               const active = pathname === link.href || pathname.startsWith(`${link.href}/`);

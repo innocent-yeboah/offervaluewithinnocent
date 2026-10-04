@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ArticleCard from "@/components/ArticleCard";
 import ArticleImage from "@/components/ArticleImage";
+import ArticleMark from "@/components/ArticleMark";
 import AuthorPortrait from "@/components/AuthorPortrait";
 import SubscribeInvite from "@/components/SubscribeInvite";
 import { articleThumbnail, getLiveArticles, pickLeadArticle } from "@/lib/articles";
@@ -60,10 +61,14 @@ export default async function HomePage() {
       {lead ? (
         <section className="lead-piece mt-8 rounded-lg border border-line px-4 py-5 sm:mt-10 sm:px-6 sm:py-6" aria-labelledby="start-here-heading">
           <p className="text-sm uppercase tracking-[0.14em] text-gold-ink">{copy.startHere}</p>
-          <div className={leadImage ? "mt-4 flex flex-col gap-5 sm:flex-row sm:items-start" : undefined}>
-          {leadImage ? <ArticleImage src={leadImage} alt={lead.title} priority variant="lead" /> : null}
+          <div className="mt-4 flex flex-col gap-5 sm:flex-row sm:items-start">
+          {leadImage ? (
+            <ArticleImage src={leadImage} alt={lead.title} priority variant="lead" />
+          ) : (
+            <ArticleMark title={lead.title} theme={lead.theme} variant="lead" />
+          )}
           <div className="min-w-0 flex-1">
-          <h2 id="start-here-heading" className={`font-serif text-2xl font-semibold leading-tight tracking-tight text-balance sm:text-3xl ${leadImage ? "" : "mt-3"}`}>
+          <h2 id="start-here-heading" className="font-serif text-2xl font-semibold leading-tight tracking-tight text-balance sm:text-3xl">
             <Link href={`/articles/${lead.slug}`} className="text-ink hover:text-link">
               {lead.title}
             </Link>
@@ -151,6 +156,26 @@ export default async function HomePage() {
             </Link>
           </p>
         ) : null}
+      </section>
+
+      <section className="mt-12 sm:mt-14" aria-labelledby="work-with-me-heading">
+        <div className="rounded-lg border border-line px-4 py-5 sm:px-6 sm:py-6">
+          <h2 id="work-with-me-heading" className="font-serif text-2xl font-semibold">
+            Work with me
+          </h2>
+          <p className="mt-3 max-w-xl text-base leading-relaxed text-pretty text-muted">
+            I also help African business owners, with a focus on Ghana, put a clearer system around
+            how they win and serve customers.
+          </p>
+          <p className="mt-5">
+            <Link
+              href="/work-with-me"
+              className="inline-flex min-h-11 items-center justify-center rounded-md bg-button px-4 text-sm font-medium text-paper"
+            >
+              See how to start
+            </Link>
+          </p>
+        </div>
       </section>
 
       <section className="mt-12 scroll-mt-24 sm:mt-14" id="weekly-list" aria-label="Join the weekly list">

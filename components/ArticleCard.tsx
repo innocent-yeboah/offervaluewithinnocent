@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ArticleImage from "@/components/ArticleImage";
+import ArticleMark from "@/components/ArticleMark";
 import { articleThumbnail, type PublicArticle } from "@/lib/articles";
 import { formatArticleDate } from "@/lib/dates";
 import { themeLabel, themeToneClass } from "@/lib/site";
@@ -33,16 +34,16 @@ export default function ArticleCard({ article }: { article: PublicArticle }) {
 
   return (
     <article className="border-b border-line py-6 first:pt-0">
-      {thumbnail ? (
-        <div className="flex items-start gap-4">
-          <Link href={`/articles/${article.slug}`} className="shrink-0">
+      <div className="flex items-start gap-4">
+        <Link href={`/articles/${article.slug}`} className="shrink-0">
+          {thumbnail ? (
             <ArticleImage src={thumbnail} alt={article.title} variant="card" />
-          </Link>
-          {body}
-        </div>
-      ) : (
-        body
-      )}
+          ) : (
+            <ArticleMark title={article.title} theme={article.theme} variant="card" />
+          )}
+        </Link>
+        {body}
+      </div>
     </article>
   );
 }

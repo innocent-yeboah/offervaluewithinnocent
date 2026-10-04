@@ -381,7 +381,7 @@ export default function ArticleEditor({
               </button>
             ) : null}
           </div>
-          <p className="text-muted">{thumbnailPath ? "Thumbnail set." : "No thumbnail."}</p>
+          <p className="text-muted">{thumbnailPath ? "Thumbnail set." : copy.thumbnailNone}</p>
         </div>
       ) : (
         <p className="text-sm leading-relaxed text-muted">{copy.thumbnailMigration}</p>

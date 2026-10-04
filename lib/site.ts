@@ -10,6 +10,9 @@ export const site = {
   tagline: "Weekly writing on value, habits, relationships, and service.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://offervaluewithinnocent.com",
   email: "hello@offervaluewithinnocent.com",
+  /** Digits only, for https://wa.me/. Display form is whatsappDisplay. */
+  whatsapp: "233530710628",
+  whatsappDisplay: "+233 530 710 628",
   linkedin: "https://www.linkedin.com/in/innocent-golden",
   locale: "en",
 } as const;
@@ -53,13 +56,15 @@ export const navLinks = [
   { href: "/articles", label: "Articles" },
   { href: "/about", label: "About" },
   { href: "/newsletter", label: "Newsletter" },
+  { href: "/work-with-me", label: "Work with me" },
   { href: "/contact", label: "Contact" },
 ] as const;
 
 export const copy = {
   weeklyPromise: "New writing each week.",
   newsletterWhat:
-    "Each week I’ll send a short note with a link to the new piece. The reading happens here.",
+    "New writing each week. I’ll send a short note with a link to the new piece. The reading happens here.",
+  whatsappNote: "Hello Innocent, I would like to talk about working together.",
   subscribeQuiet: "No spam. No hype. Just one thoughtful note each week.",
   emptyArticles:
     "There are no pieces here yet. I have promised new writing each week. The first one will live on this page.",
@@ -127,11 +132,17 @@ export const copy = {
     "Saved. The closing line will keep until you apply the next-step migration. Then you can save it here.",
   coverHint: "Shown at the top of the piece. Optional.",
   thumbnailHint:
-    "Shown on the articles list, and on the home lead when this piece is the lead. Leave it empty and the list stays text.",
+    "Shown on the articles list, and on the home lead when this piece is the lead. Leave it empty and the cover is used. With no cover, a simple mark is shown.",
   thumbnailUseCover: "Use the cover image",
   thumbnailClear: "Remove thumbnail",
+  thumbnailNone: "No saved thumbnail. The list uses the cover, or a simple mark if there is no cover.",
   thumbnailMigration:
-    "A list thumbnail can be saved here after you apply the migration. The lead piece still uses its cover on the home page until then.",
+    "A saved thumbnail can be stored here after you apply the migration. Until then, the list uses the cover. With no cover, a simple mark is shown.",
   savedWithoutNewColumns:
     "Saved. The closing line or thumbnail needs the migration before it can be stored. The rest of the piece is saved.",
 } as const;
+
+/** WhatsApp chat with a short note already written. */
+export function whatsappHref(): string {
+  return `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(copy.whatsappNote)}`;
+}

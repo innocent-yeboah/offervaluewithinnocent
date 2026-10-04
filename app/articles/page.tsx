@@ -23,7 +23,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
 
   return (
     <main id="main" className="site-pad mx-auto max-w-3xl py-10 sm:py-16">
-      <h1 className="font-serif text-[1.85rem] font-semibold tracking-tight text-balance sm:text-4xl">
+      <h1 className="font-serif text-[1.85rem] font-semibold leading-tight tracking-tight text-balance sm:text-4xl">
         Articles
       </h1>
       <p className="mt-3 text-muted">{copy.weeklyPromise}</p>
