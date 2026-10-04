@@ -1,5 +1,3 @@
-import { site } from "@/lib/site";
-
 type SiteLogoProps = {
   /** Rendered square size in pixels. Matches the image width and height. */
   size: number;
@@ -11,11 +9,9 @@ const lightSrc = "/brand/ov-mark-light.svg";
 const darkSrc = "/brand/ov-mark-dark.svg";
 
 /**
- * Square OV monogram.
- * The horizontal lockup is about 4:1. At a height that still fits beside the
- * nav, and on a phone, the wordmark shrinks below a readable size. The square
- * mark stays clear. Light artwork is for paper; dark artwork is for navy.
- * Which one shows is decided in the head CSS so the first paint is correct.
+ * Square OV monogram. Alt is empty because BrandLockup paints the name in
+ * text beside it, and that text is the link name. Light artwork is for paper;
+ * dark artwork is for navy. The head CSS picks one before first paint.
  */
 export default function SiteLogo({ size, priority = false }: SiteLogoProps) {
   const frame = { width: size, height: size };
@@ -26,7 +22,7 @@ export default function SiteLogo({ size, priority = false }: SiteLogoProps) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={lightSrc}
-        alt={site.name}
+        alt=""
         width={size}
         height={size}
         decoding="async"
@@ -37,7 +33,7 @@ export default function SiteLogo({ size, priority = false }: SiteLogoProps) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={darkSrc}
-        alt={site.name}
+        alt=""
         width={size}
         height={size}
         decoding="async"

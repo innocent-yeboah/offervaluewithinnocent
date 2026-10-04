@@ -1,5 +1,5 @@
 import Link from "next/link";
-import SiteLogo from "@/components/SiteLogo";
+import BrandLockup from "@/components/BrandLockup";
 import { navLinks, site, themeToneClass, themes, whatsappHref } from "@/lib/site";
 
 export default function SiteFooter() {
@@ -16,9 +16,7 @@ export default function SiteFooter() {
       <div className="site-footer border-t border-line">
         <div className="site-pad mx-auto flex max-w-3xl flex-col gap-8 py-8 text-sm text-muted sm:py-10 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex shrink-0 flex-col gap-3">
-            <Link href="/" className="inline-flex w-fit rounded-sm">
-              <SiteLogo size={48} />
-            </Link>
+            <BrandLockup stacked mark={40} />
             <div className="flex flex-col gap-2">
               <p className="flex items-center gap-2 font-serif text-base text-ink">
                 <span className="theme-dot theme-value" aria-hidden="true" />

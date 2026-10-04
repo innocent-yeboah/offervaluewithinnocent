@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 import { usePathname } from "next/navigation";
-import SiteLogo from "@/components/SiteLogo";
+import BrandLockup from "@/components/BrandLockup";
 import ThemeToggle from "@/components/ThemeToggle";
 import { navLinks } from "@/lib/site";
 
@@ -41,10 +41,8 @@ export default function WarmNav() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur-sm">
-      <div className="site-pad mx-auto flex max-w-3xl items-center justify-between gap-3 py-3 sm:py-4">
-        <Link href="/" className="inline-flex shrink-0 rounded-sm">
-          <SiteLogo size={44} priority />
-        </Link>
+      <div className="site-pad mx-auto flex max-w-3xl items-center justify-between gap-3 py-3 sm:py-4 lg:max-w-5xl">
+        <BrandLockup priority mark={40} />
         {isAdmin ? (
           <nav className="flex shrink-0 items-center gap-3 text-sm sm:gap-4" aria-label="Admin">
             <Link href="/admin" className="inline-flex min-h-11 items-center text-muted hover:text-ink">
