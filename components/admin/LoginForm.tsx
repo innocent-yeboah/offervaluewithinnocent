@@ -127,7 +127,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex min-h-11 items-center justify-center rounded-md bg-link px-4 text-sm font-medium text-paper disabled:opacity-60"
+        className="inline-flex min-h-11 items-center justify-center rounded-md bg-button px-4 text-sm font-medium text-paper disabled:opacity-60"
       >
         {pending ? "Signing in…" : "Sign in"}
       </button>

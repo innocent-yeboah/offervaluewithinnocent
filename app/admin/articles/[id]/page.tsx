@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ArticleEditor from "@/components/admin/ArticleEditor";
 import { requireAuthor } from "@/lib/auth";
+import { withOptionalColumns } from "@/lib/article-columns";
 import { isThemeSlug } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -23,11 +24,27 @@ export default async function EditArticlePage({ params }: EditPageProps) {
   }
 
   const { supabase, user } = await requireAuthor();
-  const { data } = await supabase
-    .from("articles")
-    .select("id, slug, title, excerpt, body_markdown, cover_image_path, theme, status, published_at")
-    .eq("id", articleId)
-    .maybeSingle();
+  const baseColumns =
+    "id, slug, title, excerpt, body_markdown, cover_image_path, theme, status, published_at";
+  const loaded = await withOptionalColumns(baseColumns, (columns) =>
+    supabase.from("articles").select(columns).eq("id", articleId).maybeSingle(),
+  );
+  const data = loaded.data as {
+    id: number;
+    slug: string;
+    title: string;
+    excerpt: string | null;
+    body_markdown: string;
+    cover_image_path: string | null;
+    theme: string;
+    status: string;
+    published_at: string | null;
+    next_step?: string | null;
+    next_step_slug?: string | null;
+    thumbnail_path?: string | null;
+  } | null;
+  const nextStepReady = !loaded.dropped.includes("next_step");
+  const thumbnailReady = !loaded.dropped.includes("thumbnail_path");
 
   if (!data || !isThemeSlug(data.theme)) {
     notFound();
@@ -49,7 +66,12 @@ export default async function EditArticlePage({ params }: EditPageProps) {
             theme: data.theme,
             status: data.status as "draft" | "published",
             published_at: data.published_at as string | null,
+            next_step: (data.next_step as string | null) ?? "",
+            next_step_slug: (data.next_step_slug as string | null) ?? "",
+            thumbnail_path: (data.thumbnail_path as string | null) ?? "",
           }}
+          nextStepReady={nextStepReady}
+          thumbnailReady={thumbnailReady}
         />
       </div>
     </main>

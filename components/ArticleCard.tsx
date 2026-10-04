@@ -1,11 +1,13 @@
 import Link from "next/link";
+import ArticleImage from "@/components/ArticleImage";
+import { articleThumbnail, type PublicArticle } from "@/lib/articles";
 import { formatArticleDate } from "@/lib/dates";
 import { themeLabel, themeToneClass } from "@/lib/site";
-import type { PublicArticle } from "@/lib/articles";
 
 export default function ArticleCard({ article }: { article: PublicArticle }) {
-  return (
-    <article className="border-b border-line py-6 first:pt-0">
+  const thumbnail = articleThumbnail(article);
+  const body = (
+    <div className="min-w-0 flex-1">
       <p className="text-xs uppercase leading-relaxed tracking-wide text-muted">
         <span className={`theme-mark ${themeToneClass(article.theme)} inline-flex items-center gap-1.5`}>
           <span className="theme-dot" aria-hidden="true" />
@@ -26,6 +28,21 @@ export default function ArticleCard({ article }: { article: PublicArticle }) {
         </Link>
       </h2>
       {article.excerpt ? <p className="mt-2 text-muted">{article.excerpt}</p> : null}
+    </div>
+  );
+
+  return (
+    <article className="border-b border-line py-6 first:pt-0">
+      {thumbnail ? (
+        <div className="flex items-start gap-4">
+          <Link href={`/articles/${article.slug}`} className="shrink-0">
+            <ArticleImage src={thumbnail} alt={article.title} variant="card" />
+          </Link>
+          {body}
+        </div>
+      ) : (
+        body
+      )}
     </article>
   );
 }

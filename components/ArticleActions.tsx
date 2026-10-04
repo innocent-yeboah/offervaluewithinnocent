@@ -115,7 +115,7 @@ export default function ArticleActions({ slug, title, text }: ArticleActionsProp
         <button
           type="button"
           onClick={onShare}
-          className={`${actionClass} bg-ink text-paper shadow-[0_8px_20px_rgba(28,25,23,0.16)]`}
+          className={`${actionClass} bg-ink text-paper shadow-[0_8px_20px_rgba(26,42,74,0.18)]`}
         >
           {copy.shareArticle}
           <ShareIcon />
