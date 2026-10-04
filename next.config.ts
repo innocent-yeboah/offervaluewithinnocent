@@ -9,9 +9,6 @@ if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
 supabaseHosts.add("gxqqzujtvkbijmperiku.supabase.co");
 
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return [{ source: "/favicon.ico", destination: "/icon" }];
-  },
   images: {
     remotePatterns: [...supabaseHosts].map((hostname) => ({
       protocol: "https" as const,
