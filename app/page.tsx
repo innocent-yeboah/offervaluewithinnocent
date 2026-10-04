@@ -164,8 +164,8 @@ export default async function HomePage() {
             Work with me
           </h2>
           <p className="mt-3 max-w-xl text-base leading-relaxed text-pretty text-muted">
-            I also help African business owners, with a focus on Ghana, put a clearer system around
-            how they win and serve customers.
+            I also build software that helps African businesses, with a focus on Ghana, win and serve
+            customers.
           </p>
           <p className="mt-5">
             <Link
