@@ -58,7 +58,7 @@ export default function SubscribeInvite({ kitOpen }: SubscribeInviteProps) {
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-link px-4 text-sm font-medium text-paper disabled:opacity-60 sm:w-auto"
+          className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-button px-4 text-sm font-medium text-paper disabled:opacity-60 sm:w-auto"
         >
           {pending ? "Sending…" : "Join"}
         </button>

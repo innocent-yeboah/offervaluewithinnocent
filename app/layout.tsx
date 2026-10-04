@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { Inter, Newsreader } from "next/font/google";
 import WarmNav from "@/components/WarmNav";
 import SiteFooter from "@/components/Footer";
+import { brandCss, palette } from "@/lib/palette";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -41,7 +42,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FAF6F0",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: palette.paper },
+    { media: "(prefers-color-scheme: dark)", color: palette.navy },
+  ],
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -63,6 +67,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${newsreader.variable}`} suppressHydrationWarning>
       <head>
+        <style dangerouslySetInnerHTML={{ __html: brandCss }} />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="min-h-dvh bg-paper text-ink antialiased">

@@ -1,3 +1,5 @@
+import { palette } from "@/lib/palette";
+
 type BrandMarkProps = {
   size: number;
 };
@@ -17,8 +19,8 @@ export function BrandMark({ size }: BrandMarkProps) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#C9A227",
-        color: "#1C1917",
+        background: palette.gold,
+        color: palette.navy,
         fontSize,
         fontWeight: 700,
         letterSpacing: "-0.04em",

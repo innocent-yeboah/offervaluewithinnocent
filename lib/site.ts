@@ -29,6 +29,13 @@ export type ThemeSlug = (typeof themes)[number]["slug"];
 
 export const themeSlugs = themes.map((theme) => theme.slug);
 
+/**
+ * The lead piece on the home page. One line to swap.
+ * It states the idea the rest of the writing comes from.
+ */
+export const FLAGSHIP_SLUG =
+  "you-don-t-need-to-prove-your-worth-you-need-to-offer-it" as const;
+
 export function isThemeSlug(value: string): value is ThemeSlug {
   return (themeSlugs as readonly string[]).includes(value);
 }
@@ -94,4 +101,37 @@ export const copy = {
   thoughtsShare: "Share a thought",
   thoughtsThanks:
     "Thank you. I’ll read this, and if it belongs with the piece, it will appear here.",
+  homeFor:
+    "If you are trying to live with more honesty, deeper service, and lasting value, this writing is for you.",
+  homePromise:
+    "I think out loud here about value. Offering it, instead of proving it, changes how we work.",
+  homeIntro:
+    "I write each week as a fellow traveler, still learning. Not as an expert. The pieces are on value, habits, relationships, service, and money.",
+  readLead: "Read the lead piece",
+  joinWeekly: "Join the weekly list",
+  startHere: "Start here",
+  flagshipFrame:
+    "This is the idea everything else on the site comes from. You don’t have to prove your worth. You can offer it.",
+  flagshipStandIn:
+    "The piece I usually ask people to start with is not up right now. This is the latest writing.",
+  readThisPiece: "Read this piece",
+  whereNext: "Where to next",
+  nextStepHint:
+    "One or two sentences after the piece. A question, or a pointer toward the lead idea. Leave this blank and the site will point readers to the lead piece.",
+  nextStepSlugHint:
+    "Optional. The slug of a published piece to link under those sentences. The article title is the link.",
+  nextStepMigration:
+    "Where to next can be saved here after the next-step migration is applied. Until then, each piece still closes with a line.",
+  nextStepTooLong: "The next step needs to stay short. Two sentences is enough.",
+  nextStepSavedWithoutColumn:
+    "Saved. The closing line will keep until you apply the next-step migration. Then you can save it here.",
+  coverHint: "Shown at the top of the piece. Optional.",
+  thumbnailHint:
+    "Shown on the articles list, and on the home lead when this piece is the lead. Leave it empty and the list stays text.",
+  thumbnailUseCover: "Use the cover image",
+  thumbnailClear: "Remove thumbnail",
+  thumbnailMigration:
+    "A list thumbnail can be saved here after you apply the migration. The lead piece still uses its cover on the home page until then.",
+  savedWithoutNewColumns:
+    "Saved. The closing line or thumbnail needs the migration before it can be stored. The rest of the piece is saved.",
 } as const;

@@ -6,6 +6,7 @@ import MarkdownBody from "@/components/MarkdownBody";
 import WritingHelp from "@/components/admin/WritingHelp";
 import { revalidateArticles } from "@/app/actions";
 import { visibilityLabel } from "@/lib/dates";
+import { missingOptionalColumn } from "@/lib/article-columns";
 import { copy, site, themes, type ThemeSlug } from "@/lib/site";
 import { createSupabaseBrowser } from "@/lib/supabase-browser";
 
@@ -19,6 +20,9 @@ type EditorArticle = {
   theme: ThemeSlug;
   status: "draft" | "published";
   published_at: string | null;
+  next_step?: string | null;
+  next_step_slug?: string | null;
+  thumbnail_path?: string | null;
 };
 
 function slugify(value: string): string {
@@ -42,12 +46,18 @@ function toDatetimeLocal(iso: string | null): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
+const NEXT_STEP_LIMIT = 600;
+
 export default function ArticleEditor({
   article,
   authorId,
+  nextStepReady = true,
+  thumbnailReady = true,
 }: {
   article?: EditorArticle;
   authorId: string;
+  nextStepReady?: boolean;
+  thumbnailReady?: boolean;
 }) {
   const router = useRouter();
   const [title, setTitle] = useState(article?.title ?? "");
@@ -58,6 +68,11 @@ export default function ArticleEditor({
   const [theme, setTheme] = useState<ThemeSlug>(article?.theme ?? "value");
   const [coverPath, setCoverPath] = useState(article?.cover_image_path ?? "");
   const [scheduleAt, setScheduleAt] = useState(toDatetimeLocal(article?.published_at ?? null));
+  const [nextStep, setNextStep] = useState(article?.next_step ?? "");
+  const [nextStepSlug, setNextStepSlug] = useState(article?.next_step_slug ?? "");
+  const [thumbnailPath, setThumbnailPath] = useState(article?.thumbnail_path ?? "");
+  const [canStoreNextStep, setCanStoreNextStep] = useState(nextStepReady);
+  const [canStoreThumbnail, setCanStoreThumbnail] = useState(thumbnailReady);
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
   const [confirmRemove, setConfirmRemove] = useState(false);
@@ -77,16 +92,35 @@ export default function ArticleEditor({
     }
   }
 
-  async function uploadCover(file: File) {
+  async function uploadToCovers(file: File): Promise<string | null> {
     const supabase = createSupabaseBrowser();
     const ext = file.name.split(".").pop() ?? "jpg";
     const path = `${authorId}/${Date.now()}.${ext}`;
     const { error } = await supabase.storage.from("covers").upload(path, file, { upsert: true });
     if (error) {
       setMessage(copy.tryAgain);
+      return null;
+    }
+    return path;
+  }
+
+  async function uploadCover(file: File) {
+    const path = await uploadToCovers(file);
+    if (!path) {
       return;
     }
     setCoverPath(path);
+    if (!article?.id && canStoreThumbnail && !thumbnailPath) {
+      setThumbnailPath(path);
+    }
+  }
+
+  async function uploadThumbnail(file: File) {
+    const path = await uploadToCovers(file);
+    if (!path) {
+      return;
+    }
+    setThumbnailPath(path);
   }
 
   async function save(intent: "draft" | "now" | "schedule") {
@@ -117,7 +151,14 @@ export default function ArticleEditor({
       setJustWentLive(false);
     }
 
-    const payload = {
+    const nextStepText = nextStep.trim();
+    if (canStoreNextStep && nextStepText.length > NEXT_STEP_LIMIT) {
+      setMessage(copy.nextStepTooLong);
+      setPending(false);
+      return;
+    }
+
+    const payload: Record<string, unknown> = {
       title: title.trim(),
       slug: slugify(slug),
       excerpt: excerpt.trim() || null,
@@ -129,23 +170,64 @@ export default function ArticleEditor({
       author_id: authorId,
     };
 
+    if (canStoreNextStep) {
+      payload.next_step = nextStepText || null;
+      payload.next_step_slug = slugify(nextStepSlug) || null;
+    }
+    if (canStoreThumbnail) {
+      payload.thumbnail_path = thumbnailPath.trim() || null;
+    }
+
     try {
       const supabase = createSupabaseBrowser();
       let savedId = article?.id;
-      if (article?.id) {
-        const { error } = await supabase.from("articles").update(payload).eq("id", article.id);
+      const write = async (row: Record<string, unknown>) => {
+        if (article?.id) {
+          const { error } = await supabase.from("articles").update(row).eq("id", article.id);
+          if (error) {
+            throw error;
+          }
+          return article.id;
+        }
+        const { data, error } = await supabase.from("articles").insert(row).select("id").single();
         if (error) {
           throw error;
         }
-      } else {
-        const { data, error } = await supabase.from("articles").insert(payload).select("id").single();
-        if (error) {
-          throw error;
+        return data.id as number;
+      };
+
+      const row = { ...payload };
+      let stripped = false;
+      for (let attempt = 0; attempt < 5; attempt += 1) {
+        try {
+          savedId = await write(row);
+          break;
+        } catch (error) {
+          const missing = missingOptionalColumn(error as { code?: string; message?: string });
+          if (!missing || !(missing in row)) {
+            throw error;
+          }
+          delete row[missing];
+          stripped = true;
+          if (missing === "next_step" || missing === "next_step_slug") {
+            setCanStoreNextStep(false);
+          }
+          if (missing === "thumbnail_path") {
+            setCanStoreThumbnail(false);
+          }
         }
-        savedId = data.id as number;
+      }
+      if (stripped) {
+        setMessage(copy.savedWithoutNewColumns);
+        await revalidateArticles(String(row.slug));
+        if (!article?.id && savedId) {
+          router.push(`/admin/articles/${savedId}`);
+        }
+        router.refresh();
+        return;
       }
 
-      await revalidateArticles(payload.slug);
+      await revalidateArticles(String(payload.slug));
       if (!article?.id && savedId) {
         router.push(`/admin/articles/${savedId}`);
       }
@@ -261,7 +343,49 @@ export default function ArticleEditor({
             }
           }}
         />
+        <span className="text-muted">{copy.coverHint}</span>
       </label>
+      {canStoreThumbnail ? (
+        <div className="flex flex-col gap-2 text-sm">
+          <label className="flex flex-col gap-1">
+            Thumbnail (optional)
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (file) {
+                  void uploadThumbnail(file);
+                }
+              }}
+            />
+            <span className="text-muted">{copy.thumbnailHint}</span>
+          </label>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              disabled={pending || !coverPath}
+              onClick={() => setThumbnailPath(coverPath)}
+              className="inline-flex min-h-11 items-center text-sm text-link underline-offset-4 hover:underline disabled:opacity-50"
+            >
+              {copy.thumbnailUseCover}
+            </button>
+            {thumbnailPath ? (
+              <button
+                type="button"
+                disabled={pending}
+                onClick={() => setThumbnailPath("")}
+                className="inline-flex min-h-11 items-center text-sm text-muted hover:text-ink"
+              >
+                {copy.thumbnailClear}
+              </button>
+            ) : null}
+          </div>
+          <p className="text-muted">{thumbnailPath ? "Thumbnail set." : "No thumbnail."}</p>
+        </div>
+      ) : (
+        <p className="text-sm leading-relaxed text-muted">{copy.thumbnailMigration}</p>
+      )}
       <div className="grid gap-4 lg:grid-cols-2">
         <label className="flex flex-col gap-1 text-sm">
           Writing (markdown)
@@ -286,6 +410,33 @@ export default function ArticleEditor({
         onApply={setBody}
         disabled={pending}
       />
+      {canStoreNextStep ? (
+        <>
+          <label className="flex flex-col gap-1 text-sm">
+            Where to next
+            <textarea
+              value={nextStep}
+              onChange={(event) => setNextStep(event.target.value)}
+              rows={3}
+              maxLength={NEXT_STEP_LIMIT}
+              className="rounded-md border border-line bg-paper px-3 py-2"
+            />
+            <span className="text-muted">{copy.nextStepHint}</span>
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            Next piece slug
+            <input
+              value={nextStepSlug}
+              onChange={(event) => setNextStepSlug(event.target.value)}
+              className="rounded-md border border-line bg-paper px-3 py-2 font-mono text-sm"
+              spellCheck={false}
+            />
+            <span className="text-muted">{copy.nextStepSlugHint}</span>
+          </label>
+        </>
+      ) : (
+        <p className="text-sm leading-relaxed text-muted">{copy.nextStepMigration}</p>
+      )}
       <label className="flex flex-col gap-1 text-sm">
         Schedule (your local time)
         <input
@@ -308,7 +459,7 @@ export default function ArticleEditor({
           type="button"
           disabled={pending}
           onClick={() => void save("now")}
-          className="inline-flex min-h-11 items-center rounded-md bg-link px-4 text-sm font-medium text-paper"
+          className="inline-flex min-h-11 items-center rounded-md bg-button px-4 text-sm font-medium text-paper"
         >
           Publish now
         </button>
@@ -316,7 +467,7 @@ export default function ArticleEditor({
           type="button"
           disabled={pending}
           onClick={() => void save("schedule")}
-          className="inline-flex min-h-11 items-center rounded-md border border-gold px-4 text-sm"
+          className="inline-flex min-h-11 items-center rounded-md border border-gold-ink px-4 text-sm"
         >
           Schedule
         </button>

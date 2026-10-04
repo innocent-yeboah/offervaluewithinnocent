@@ -83,7 +83,7 @@ export default async function AdminHomePage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-serif text-3xl font-semibold">Writing</h1>
         <div className="flex flex-wrap items-center gap-3">
-          <Link href="/admin/articles/new" className="inline-flex min-h-11 items-center rounded-md bg-link px-3 text-sm text-paper">
+          <Link href="/admin/articles/new" className="inline-flex min-h-11 items-center rounded-md bg-button px-3 text-sm text-paper">
             New piece
           </Link>
           <form action={signOutAction}>
@@ -186,7 +186,7 @@ export default async function AdminHomePage() {
                         <input type="hidden" name="status" value="published" />
                         <button
                           type="submit"
-                          className="inline-flex min-h-11 items-center rounded-md bg-link px-3 text-sm text-paper"
+                          className="inline-flex min-h-11 items-center rounded-md bg-button px-3 text-sm text-paper"
                         >
                           Show on the piece
                         </button>

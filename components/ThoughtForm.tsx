@@ -51,7 +51,7 @@ export default function ThoughtForm({ slug }: ThoughtFormProps) {
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex min-h-11 self-stretch items-center justify-center rounded-md bg-link px-4 text-sm font-medium text-paper disabled:opacity-60 sm:self-start"
+        className="inline-flex min-h-11 self-stretch items-center justify-center rounded-md bg-button px-4 text-sm font-medium text-paper disabled:opacity-60 sm:self-start"
       >
         {pending ? "Sending…" : copy.thoughtsShare}
       </button>

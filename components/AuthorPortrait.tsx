@@ -31,7 +31,7 @@ export default function AuthorPortrait({ size }: AuthorPortraitProps) {
       width={frame.width}
       height={frame.height}
       priority={size === "home"}
-      className={`${frame.className} shrink-0 rounded-full object-cover object-[center_16%] shadow-[0_8px_24px_rgba(28,25,23,0.12)] ring-2 ring-gold/45 ring-offset-[3px] ring-offset-paper`}
+      className={`${frame.className} shrink-0 rounded-full object-cover object-[center_16%] shadow-[0_8px_24px_rgba(26,42,74,0.16)] ring-2 ring-gold/70 ring-offset-[3px] ring-offset-paper`}
     />
   );
 }

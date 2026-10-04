@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { articleShareDescription, getLiveArticleBySlug } from "@/lib/articles";
+import { palette } from "@/lib/palette";
 import { site, themeLabel } from "@/lib/site";
 
 export const runtime = "nodejs";
@@ -40,8 +41,8 @@ export default async function ArticleOpenGraphImage({ params }: ImageProps) {
     : null;
   const titleSize = title.length > 56 ? 40 : title.length > 40 ? 48 : 56;
   const onPhoto = Boolean(cover);
-  const ink = onPhoto ? "#FAF6F0" : "#1C1917";
-  const muted = onPhoto ? "#E7E5E4" : "#57534E";
+  const ink = palette.ivory;
+  const muted = palette.mist;
 
   return new ImageResponse(
     (
@@ -51,7 +52,7 @@ export default async function ArticleOpenGraphImage({ params }: ImageProps) {
           height: "100%",
           display: "flex",
           position: "relative",
-          backgroundColor: "#FAF6F0",
+          backgroundColor: palette.navy,
           color: ink,
         }}
       >
@@ -82,14 +83,14 @@ export default async function ArticleOpenGraphImage({ params }: ImageProps) {
             justifyContent: "flex-end",
             padding: onPhoto ? "96px 56px 48px" : "72px",
             backgroundImage: onPhoto
-              ? "linear-gradient(to top, rgba(18,16,14,0.92) 0%, rgba(18,16,14,0.7) 58%, rgba(18,16,14,0) 100%)"
+              ? "linear-gradient(to top, rgba(26,42,74,0.94) 0%, rgba(26,42,74,0.72) 58%, rgba(26,42,74,0) 100%)"
               : undefined,
           }}
         >
           <div
             style={{
               display: "flex",
-              color: "#C9A227",
+              color: palette.gold,
               fontSize: 22,
               letterSpacing: 2,
               textTransform: "uppercase",

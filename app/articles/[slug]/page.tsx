@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ArticleCard from "@/components/ArticleCard";
+import ArticleImage from "@/components/ArticleImage";
 import MarkdownBody from "@/components/MarkdownBody";
 import ArticleActions from "@/components/ArticleActions";
 import SubscribeInvite from "@/components/SubscribeInvite";
@@ -13,8 +14,10 @@ import {
 } from "@/lib/articles";
 import { formatArticleDate } from "@/lib/dates";
 import { isKitConfigured } from "@/lib/kit";
-import { copy, site, themeLabel, themeToneClass } from "@/lib/site";
+import { resolveNextStep } from "@/lib/next-step";
+import { copy, FLAGSHIP_SLUG, site, themeLabel, themeToneClass } from "@/lib/site";
 import { getPublishedThoughts } from "@/lib/thoughts";
+import WhereToNext from "@/components/WhereToNext";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -69,13 +72,25 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
 
-  const related = await getRelatedArticles(article.theme, article.slug);
-  const nextPiece = await getContinueArticle(article.slug);
-  const thoughts = await getPublishedThoughts(article.id);
+  const [related, nextPiece, thoughts, flagship, linked] = await Promise.all([
+    getRelatedArticles(article.theme, article.slug),
+    getContinueArticle(article.slug),
+    getPublishedThoughts(article.id),
+    article.slug === FLAGSHIP_SLUG
+      ? Promise.resolve(article)
+      : getLiveArticleBySlug(FLAGSHIP_SLUG),
+    article.next_step_slug ? getLiveArticleBySlug(article.next_step_slug) : Promise.resolve(null),
+  ]);
   const moreInTheme = nextPiece
     ? related.filter((item) => item.slug !== nextPiece.slug)
     : related;
   const kitOpen = isKitConfigured();
+  const nextStep = resolveNextStep({
+    article,
+    flagship,
+    linked,
+    continueArticle: nextPiece,
+  });
 
   return (
     <main id="main" className="site-pad mx-auto max-w-3xl py-10 sm:py-16">
@@ -97,16 +112,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         {article.title}
       </h1>
       {article.cover_image_path ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={article.cover_image_path}
-          alt={article.title}
-          className="mt-8 h-auto w-full rounded-md"
-        />
+        <ArticleImage src={article.cover_image_path} alt={article.title} priority variant="hero" />
       ) : null}
       <div className="mt-10">
         <MarkdownBody markdown={article.body_markdown} />
       </div>
+
+      <WhereToNext step={nextStep} />
 
       <ArticleActions
         slug={article.slug}

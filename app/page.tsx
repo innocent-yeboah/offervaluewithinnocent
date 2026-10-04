@@ -1,34 +1,109 @@
 import Link from "next/link";
 import ArticleCard from "@/components/ArticleCard";
+import ArticleImage from "@/components/ArticleImage";
 import AuthorPortrait from "@/components/AuthorPortrait";
 import SubscribeInvite from "@/components/SubscribeInvite";
-import { getLiveArticles } from "@/lib/articles";
+import { articleThumbnail, getLiveArticles, pickLeadArticle } from "@/lib/articles";
 import { isKitConfigured } from "@/lib/kit";
-import { copy, site, themeToneClass, themes } from "@/lib/site";
+import { copy, FLAGSHIP_SLUG, site, themeLabel, themeToneClass, themes } from "@/lib/site";
+import { formatArticleDate } from "@/lib/dates";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const articles = await getLiveArticles();
-  const latest = articles.slice(0, 3);
+  const lead = pickLeadArticle(articles);
+  const leadIsFlagship = lead?.slug === FLAGSHIP_SLUG;
+  const leadImage = lead ? articleThumbnail(lead) : null;
+  const latest = articles.filter((article) => article.slug !== lead?.slug).slice(0, 3);
   const kitOpen = isKitConfigured();
 
   return (
-    <main id="main" className="site-pad mx-auto max-w-3xl py-10 sm:py-16">
-      <p className="text-sm uppercase tracking-[0.14em] text-gold">{copy.weeklyPromise}</p>
-      <h1 className="font-serif mt-4 text-[1.85rem] font-semibold leading-tight tracking-tight text-balance text-ink sm:text-4xl lg:text-5xl">
-        {site.headline}
+    <main id="main" className="site-pad mx-auto max-w-3xl py-8 sm:py-12">
+      <p className="max-w-2xl text-base leading-relaxed text-pretty text-ink sm:text-lg">{copy.homeFor}</p>
+      <h1 className="font-serif mt-4 text-[1.75rem] font-semibold leading-tight tracking-tight text-balance text-ink sm:text-4xl">
+        {copy.homePromise}
       </h1>
-      <div className="mt-8 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
+
+      <div className="mt-6 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-6">
         <AuthorPortrait size="home" />
-        <p className="max-w-2xl text-base leading-relaxed text-pretty text-muted sm:text-lg">
-          I’m {site.author}. I write as a fellow traveler, still learning. Not as an expert. If you
-          are trying to live with more honesty, deeper service, and lasting value, you are welcome
-          here.
-        </p>
+        <div className="max-w-xl">
+          <p className="text-base leading-relaxed text-pretty text-muted">
+            I’m {site.author}. {copy.homeIntro}
+          </p>
+          <div className="mt-5 flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-5">
+            {lead ? (
+              <Link
+                href={`/articles/${lead.slug}`}
+                className="inline-flex min-h-11 items-center justify-center rounded-md bg-button px-4 text-sm font-medium text-paper"
+              >
+                {copy.readLead}
+              </Link>
+            ) : (
+              <Link
+                href="/articles"
+                className="inline-flex min-h-11 items-center justify-center rounded-md bg-button px-4 text-sm font-medium text-paper"
+              >
+                {copy.readLead}
+              </Link>
+            )}
+            <a
+              href="#weekly-list"
+              className="inline-flex min-h-11 items-center text-sm text-muted hover:text-ink"
+            >
+              {copy.joinWeekly}
+            </a>
+          </div>
+        </div>
       </div>
 
-      <section className="mt-14" aria-labelledby="themes-heading">
+      {lead ? (
+        <section className="lead-piece mt-8 rounded-lg border border-line px-4 py-5 sm:mt-10 sm:px-6 sm:py-6" aria-labelledby="start-here-heading">
+          <p className="text-sm uppercase tracking-[0.14em] text-gold-ink">{copy.startHere}</p>
+          <div className={leadImage ? "mt-4 flex flex-col gap-5 sm:flex-row sm:items-start" : undefined}>
+          {leadImage ? <ArticleImage src={leadImage} alt={lead.title} priority variant="lead" /> : null}
+          <div className="min-w-0 flex-1">
+          <h2 id="start-here-heading" className={`font-serif text-2xl font-semibold leading-tight tracking-tight text-balance sm:text-3xl ${leadImage ? "" : "mt-3"}`}>
+            <Link href={`/articles/${lead.slug}`} className="text-ink hover:text-link">
+              {lead.title}
+            </Link>
+          </h2>
+          <p className="mt-2 text-xs uppercase leading-relaxed tracking-wide text-muted">
+            <span className={`theme-mark ${themeToneClass(lead.theme)} inline-flex items-center gap-1.5`}>
+              <span className="theme-dot" aria-hidden="true" />
+              {themeLabel(lead.theme)}
+            </span>
+            {lead.published_at ? (
+              <>
+                <span className="mx-2" aria-hidden="true">
+                  ·
+                </span>
+                {formatArticleDate(lead.published_at)}
+              </>
+            ) : null}
+            <span className="mx-2" aria-hidden="true">
+              ·
+            </span>
+            {lead.reading_minutes} min read
+          </p>
+          <p className="mt-4 text-base leading-relaxed text-pretty text-ink">
+            {leadIsFlagship ? copy.flagshipFrame : copy.flagshipStandIn}
+          </p>
+          {lead.excerpt ? <p className="mt-3 leading-relaxed text-muted">{lead.excerpt}</p> : null}
+          <p className="mt-4">
+            <Link
+              href={`/articles/${lead.slug}`}
+              className="inline-flex min-h-11 items-center text-link underline-offset-4 hover:underline"
+            >
+              {copy.readThisPiece}
+            </Link>
+          </p>
+          </div>
+          </div>
+        </section>
+      ) : null}
+
+      <section className="mt-12 sm:mt-14" aria-labelledby="themes-heading">
         <h2 id="themes-heading" className="font-serif text-2xl font-semibold">
           What I write about
         </h2>
@@ -50,28 +125,18 @@ export default async function HomePage() {
         </ul>
       </section>
 
-      <p className="mt-14 text-base leading-relaxed text-pretty text-ink">
-        Start here:{" "}
-        {latest[0] ? (
-          <Link href={`/articles/${latest[0].slug}`} className="text-link hover:underline">
-            Read the latest article
-          </Link>
-        ) : (
-          "Read the latest article"
-        )}
-        , or{" "}
-        <a href="#weekly-list" className="text-link hover:underline">
-          join the weekly list
-        </a>
-        .
-      </p>
-
-      <section className="mt-8" aria-labelledby="latest-heading">
+      <section className="mt-12 sm:mt-14" aria-labelledby="latest-heading">
         <h2 id="latest-heading" className="font-serif text-2xl font-semibold">
           Latest writing
         </h2>
-        {latest.length === 0 ? (
+        {articles.length === 0 ? (
           <p className="mt-4 text-muted">{copy.emptyArticles}</p>
+        ) : latest.length === 0 ? (
+          <p className="mt-4 text-sm text-muted">
+            <Link href="/articles" className="text-link hover:underline">
+              All writing
+            </Link>
+          </p>
         ) : (
           <div className="mt-6">
             {latest.map((article) => (
@@ -79,14 +144,16 @@ export default async function HomePage() {
             ))}
           </div>
         )}
-        <p className="mt-4">
-          <Link href="/articles" className="text-sm text-muted hover:text-ink">
-            All writing
-          </Link>
-        </p>
+        {latest.length > 0 ? (
+          <p className="mt-4">
+            <Link href="/articles" className="text-sm text-muted hover:text-ink">
+              All writing
+            </Link>
+          </p>
+        ) : null}
       </section>
 
-      <section className="mt-14" id="weekly-list" aria-label="Join the weekly list">
+      <section className="mt-12 scroll-mt-24 sm:mt-14" id="weekly-list" aria-label="Join the weekly list">
         <SubscribeInvite kitOpen={kitOpen} />
       </section>
     </main>

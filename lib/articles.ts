@@ -1,7 +1,8 @@
+import { withOptionalColumns } from "@/lib/article-columns";
 import { createAnonClient } from "@/lib/supabase-anon";
 import { publicSupabaseUrl } from "@/lib/env";
-import { isThemeSlug, site, type ThemeSlug } from "@/lib/site";
 import { readingMinutes } from "@/lib/read-time";
+import { FLAGSHIP_SLUG, isThemeSlug, site, type ThemeSlug } from "@/lib/site";
 
 export type Article = {
   id: number;
@@ -16,14 +17,71 @@ export type Article = {
   author_id: string;
   created_at: string;
   updated_at: string;
+  next_step: string | null;
+  next_step_slug: string | null;
+  thumbnail_path: string | null;
 };
 
 export type PublicArticle = Article & {
   reading_minutes: number;
 };
 
-const publicSelect =
+const articleColumns =
   "id, slug, title, excerpt, body_markdown, cover_image_path, theme, status, published_at, author_id, created_at, updated_at";
+
+type DbError = { code?: string; message: string };
+
+type ArticleRow = Omit<Article, "next_step" | "next_step_slug" | "thumbnail_path"> & {
+  next_step?: string | null;
+  next_step_slug?: string | null;
+  thumbnail_path?: string | null;
+};
+
+let warnedMissingColumns = false;
+
+function noteMissingColumns(dropped: string[]): void {
+  if (warnedMissingColumns || dropped.length === 0) {
+    return;
+  }
+  warnedMissingColumns = true;
+  console.warn(
+    `Article columns not in the database yet (${dropped.join(", ")}). The site is using its fallbacks.`,
+  );
+}
+
+function asArticle(row: ArticleRow): Article {
+  const nextStep = row.next_step?.trim() ?? "";
+  const nextSlug = row.next_step_slug?.trim() ?? "";
+  const thumbnail = row.thumbnail_path?.trim() ?? "";
+  return {
+    ...row,
+    next_step: nextStep || null,
+    next_step_slug: nextSlug || null,
+    thumbnail_path: thumbnail || null,
+  };
+}
+
+async function readRows(
+  run: (columns: string) => PromiseLike<{ data: unknown; error: DbError | null }>,
+): Promise<{ rows: Article[]; error: DbError | null }> {
+  const { data, error, dropped } = await withOptionalColumns(articleColumns, run);
+  noteMissingColumns(dropped);
+  if (error || !Array.isArray(data)) {
+    return { rows: [], error: error ? { code: error.code, message: error.message ?? "" } : null };
+  }
+  return { rows: (data as ArticleRow[]).map(asArticle), error: null };
+}
+
+async function readRow(
+  run: (columns: string) => PromiseLike<{ data: unknown; error: DbError | null }>,
+): Promise<{ row: Article | null; error: DbError | null }> {
+  const { data, error, dropped } = await withOptionalColumns(articleColumns, run);
+  noteMissingColumns(dropped);
+  if (error || !data || Array.isArray(data)) {
+    return { row: null, error: error ? { code: error.code, message: error.message ?? "" } : null };
+  }
+  return { row: asArticle(data as ArticleRow), error: null };
+}
 
 function nowIso(): string {
   return new Date().toISOString();
@@ -47,8 +105,24 @@ function withReading(article: Article): PublicArticle {
   return {
     ...article,
     cover_image_path: coverUrl(article.cover_image_path),
+    thumbnail_path: coverUrl(article.thumbnail_path),
     reading_minutes: readingMinutes(article.body_markdown),
   };
+}
+
+/**
+ * Image for the articles list and the home lead.
+ * A saved thumbnail wins. The lead piece can also use its cover.
+ * Every other piece stays text in the list until a thumbnail is set.
+ */
+export function articleThumbnail(article: PublicArticle): string | null {
+  if (article.thumbnail_path) {
+    return article.thumbnail_path;
+  }
+  if (article.slug === FLAGSHIP_SLUG) {
+    return article.cover_image_path;
+  }
+  return null;
 }
 
 const SHARE_DESCRIPTION_LIMIT = 110;
@@ -112,21 +186,26 @@ export async function getLiveArticles(): Promise<PublicArticle[]> {
     return [];
   }
 
-  const { data, error } = await supabase
-    .from("articles")
-    .select(publicSelect)
-    .eq("status", "published")
-    .lte("published_at", nowIso())
-    .order("published_at", { ascending: false });
+  const { rows, error } = await readRows((columns) =>
+    supabase
+      .from("articles")
+      .select(columns)
+      .eq("status", "published")
+      .lte("published_at", nowIso())
+      .order("published_at", { ascending: false }),
+  );
 
-  if (error || !data) {
-    if (error) {
-      console.error("Failed to load articles:", error.message);
-    }
+  if (error) {
+    console.error("Failed to load articles:", error.message);
     return [];
   }
 
-  return (data as Article[]).map(withReading);
+  return rows.map(withReading);
+}
+
+/** The lead piece, or the latest published piece when that slug is not live. */
+export function pickLeadArticle(articles: PublicArticle[]): PublicArticle | null {
+  return articles.find((article) => article.slug === FLAGSHIP_SLUG) ?? articles[0] ?? null;
 }
 
 export async function getLiveArticleBySlug(
@@ -137,20 +216,22 @@ export async function getLiveArticleBySlug(
     return null;
   }
 
-  const { data, error } = await supabase
-    .from("articles")
-    .select(publicSelect)
-    .eq("slug", slug)
-    .eq("status", "published")
-    .lte("published_at", nowIso())
-    .maybeSingle();
+  const { row, error } = await readRow((columns) =>
+    supabase
+      .from("articles")
+      .select(columns)
+      .eq("slug", slug)
+      .eq("status", "published")
+      .lte("published_at", nowIso())
+      .maybeSingle(),
+  );
 
   if (error) {
     console.error("Failed to load article:", error.message);
     return null;
   }
 
-  return data ? withReading(data as Article) : null;
+  return row ? withReading(row) : null;
 }
 
 export async function searchLiveArticles(
@@ -167,33 +248,35 @@ export async function searchLiveArticles(
     .replace(/[^\p{L}\p{N}\s-]/gu, " ")
     .slice(0, 120);
 
-  let request = supabase
-    .from("articles")
-    .select(publicSelect)
-    .eq("status", "published")
-    .lte("published_at", nowIso());
+  const filters = (columns: string) => {
+    let request = supabase
+      .from("articles")
+      .select(columns)
+      .eq("status", "published")
+      .lte("published_at", nowIso());
 
-  if (theme && isThemeSlug(theme)) {
-    request = request.eq("theme", theme);
-  }
-
-  if (cleaned) {
-    request = request.textSearch("search_vector", cleaned, {
-      type: "plain",
-      config: "english",
-    });
-  }
-
-  const { data, error } = await request.order("published_at", { ascending: false });
-
-  if (error || !data) {
-    if (error) {
-      console.error("Search failed:", error.message);
+    if (theme && isThemeSlug(theme)) {
+      request = request.eq("theme", theme);
     }
+
+    if (cleaned) {
+      request = request.textSearch("search_vector", cleaned, {
+        type: "plain",
+        config: "english",
+      });
+    }
+
+    return request.order("published_at", { ascending: false });
+  };
+
+  const { rows, error } = await readRows(filters);
+
+  if (error) {
+    console.error("Search failed:", error.message);
     return [];
   }
 
-  return (data as Article[]).map(withReading);
+  return rows.map(withReading);
 }
 
 export async function getContinueArticle(excludeSlug: string): Promise<PublicArticle | null> {
@@ -202,22 +285,24 @@ export async function getContinueArticle(excludeSlug: string): Promise<PublicArt
     return null;
   }
 
-  const { data, error } = await supabase
-    .from("articles")
-    .select(publicSelect)
-    .eq("status", "published")
-    .lte("published_at", nowIso())
-    .neq("slug", excludeSlug)
-    .order("published_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  const { row, error } = await readRow((columns) =>
+    supabase
+      .from("articles")
+      .select(columns)
+      .eq("status", "published")
+      .lte("published_at", nowIso())
+      .neq("slug", excludeSlug)
+      .order("published_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  );
 
   if (error) {
     console.error("Failed to load next article:", error.message);
     return null;
   }
 
-  return data ? withReading(data as Article) : null;
+  return row ? withReading(row) : null;
 }
 
 export async function getRelatedArticles(
@@ -229,21 +314,23 @@ export async function getRelatedArticles(
     return [];
   }
 
-  const { data, error } = await supabase
-    .from("articles")
-    .select(publicSelect)
-    .eq("theme", theme)
-    .neq("slug", excludeSlug)
-    .eq("status", "published")
-    .lte("published_at", nowIso())
-    .order("published_at", { ascending: false })
-    .limit(3);
+  const { rows, error } = await readRows((columns) =>
+    supabase
+      .from("articles")
+      .select(columns)
+      .eq("theme", theme)
+      .neq("slug", excludeSlug)
+      .eq("status", "published")
+      .lte("published_at", nowIso())
+      .order("published_at", { ascending: false })
+      .limit(3),
+  );
 
-  if (error || !data) {
+  if (error) {
     return [];
   }
 
-  return (data as Article[]).map(withReading);
+  return rows.map(withReading);
 }
 
 export async function getLiveSlugs(): Promise<string[]> {
